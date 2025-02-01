@@ -32,6 +32,15 @@ typedef struct s_mini
 
 }t_mini;
 
+void inizializer(t_mini *mini, char **env);
+char	*ft_strdup(const char *s1);
 void	*safe_malloc(size_t size);
+void printmatrix (char **matrix);
+void	ft_strncpy(char *dst, const char *src, size_t n);
+int	ft_strncmp(const char *s1, const char *s2, size_t n);
+char **export(char **env, const char *new_var);
+char **copyenv(char **envp);
+void free_env(char **env);
+
 
 #endif

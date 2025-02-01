@@ -5,7 +5,7 @@ SRC_DIR = src/
 INC_DIR = include/
 
 # Source files with path
-SRC = $(addprefix $(SRC_DIR), mainmini.c safefunct.c)
+SRC = $(addprefix $(SRC_DIR), mainmini.c safefunct.c inizializer.c env.c utils1.c)
 OBJ = $(SRC:.c=.o)
 
 # Compiler and flags
@@ -63,4 +63,4 @@ minipd:
 	@echo -e '$(BLUE)$(BOLD)          j            ,;.              fE  ,;. $(NO_COLOR)'
 	@echo -e ' '
 
-.PHONY: clean fclean re all minipd
+.PHONY: clean fclean re all minipd
