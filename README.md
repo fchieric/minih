@@ -9,7 +9,7 @@ This is our snail (Mini)
 
 
 
-![Logo](https://cdn.britannica.com/27/131227-050-4DAD6A15/snail.jpg)
+![Logo](https://assets.iflscience.com/assets/articleNo/68292/aImg/66920/giant-snail-l.jpg)
 
 ## Shell preference
 
