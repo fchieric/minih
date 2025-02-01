@@ -1,20 +1,35 @@
 NAME = mini
 
-SRC = mainmini.c safefunct.c
+# Source and include directories
+SRC_DIR = src/
+INC_DIR = include/
+
+# Source files with path
+SRC = $(addprefix $(SRC_DIR), mainmini.c safefunct.c)
 OBJ = $(SRC:.c=.o)
 
+# Compiler and flags
 CC = gcc
+INCLUDES = -I$(INC_DIR)
 CFLAGS = -Wall -Wextra -Werror -g $(INCLUDES)
 LDFLAGS = -L/usr/lib/x86_64-linux-gnu -lreadline
 
+# Colors for echo
+BOLD = \033[1m
+RED = \033[31m
+NO_COLOR = \033[0m
+
+# Main target
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LDFLAGS)
-	echo "${BOLD}Creating  -> ${RED}$(NAME)${NO_COLOR}"
-	${MAKE} minipd
+	@echo "$(BOLD)Creating  -> $(RED)$(NAME)$(NO_COLOR)"
+	@$(MAKE) minipd
 
+# Object files
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# Clean targets
 clean:
 	rm -f $(OBJ)
 
@@ -23,6 +38,9 @@ fclean: clean
 
 re: fclean all
 
+all: $(NAME)
+
+# ASCII art
 minipd:
 	@echo '                       t    EW:        ,ft  t'
 	@echo '           ..       :  Ej   E##;       t#E  Ej'
@@ -36,3 +54,5 @@ minipd:
 	@echo ' :K#t     ##D.    E#t  E#t  E#t      .E##E  E#t'
 	@echo ' ...      #G      ..   E#t  ..         G#E  E#t'
 	@echo '          j            ,;.              fE  ,;.'
+
+.PHONY: clean fclean re all minipd
