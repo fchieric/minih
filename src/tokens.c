@@ -1,22 +1,53 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexerutils3.c                                      :+:      :+:    :+:   */
+/*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmartusc <fmartusc@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: fabi <fabi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/01 19:26:51 by fmartusc          #+#    #+#             */
-/*   Updated: 2025/02/01 19:26:51 by fmartusc         ###   ########.fr       */
+/*   Created: 2025/02/01 19:36:50 by fabi              #+#    #+#             */
+/*   Updated: 2025/02/01 19:36:50 by fabi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*
-* Aggiunge un nuovo token alla lista di token
-* Se tokens è NULL, crea il primo token
-* Altrimenti aggiunge il nuovo token alla fine della lista
-*/
+//per i test
+static const char	*get_token_type_str(t_token_type type)
+{
+	if (type == TOKEN_WORD)
+		return ("WORD");
+	if (type == TOKEN_TEXT)
+		return ("TEXT");
+	if (type == TOKEN_VAR)
+		return ("VAR");
+	if (type == TOKEN_PIPE)
+		return ("PIPE");
+	if (type == TOKEN_REDIR_IN)
+		return ("REDIR_IN");
+	if (type == TOKEN_REDIR_OUT)
+		return ("REDIR_OUT");
+	if (type == TOKEN_HEREDOC)
+		return ("HEREDOC");
+	if (type == TOKEN_APPEND)
+		return ("APPEND");
+	return ("UNKNOWN");
+}
+
+//per test
+void	print_tokens(t_token *tokens)
+{
+	t_token	*current;
+
+	current = tokens;
+	while (current)
+	{
+		printf("Type: %-10s Value: '%s'\n",
+			get_token_type_str(current->type), current->value);
+		current = current->next;
+	}
+}
+
 void	add_token(t_token **tokens, t_token_type type, const char *value)
 {
 	t_token	*new_token;
@@ -44,9 +75,6 @@ void	add_token(t_token **tokens, t_token_type type, const char *value)
 	}
 }
 
-/*
-* Libera un singolo token e il suo contenuto
-*/
 void	free_token(t_token *token)
 {
 	if (!token)
@@ -56,9 +84,6 @@ void	free_token(t_token *token)
 	free(token);
 }
 
-/*
-* Libera l'intera lista di token
-*/
 void	free_tokens(t_token *tokens)
 {
 	t_token	*next;
@@ -67,6 +92,6 @@ void	free_tokens(t_token *tokens)
 	{
 		next = tokens->next;
 		free_token(tokens);
-		tokens = next;
+		tokens = next;
 	}
 }

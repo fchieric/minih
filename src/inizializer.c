@@ -19,4 +19,5 @@ void inizializer(t_mini *mini, char **env)
 	mini->envp = safe_malloc(sizeof(t_env));
 	mini->envp->env = copyenv(env);
 	mini->envp->exportenv = copyenv(env);
+	mini->envp->exit_status = 0;
 }

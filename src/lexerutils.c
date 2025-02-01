@@ -12,7 +12,25 @@
 
 #include "minishell.h"
 
-static void	handle_redirection(t_token **tokens, const char *input,
+char	*get_env_value(char **env, const char *name)
+{
+	int		i;
+	size_t	len;
+
+	if (!env || !name)
+		return (NULL);
+	len = ft_strlen(name);
+	i = 0;
+	while (env[i])
+	{
+		if (ft_strncmp(env[i], name, len) == 0 && env[i][len] == '=')
+			return (env[i] + len + 1);
+		i++;
+	}
+	return (NULL);
+}
+
+void	handle_redirection(t_token **tokens, const char *input,
 	size_t *i, char type)
 {
 	if (input[*i + 1] == type)
@@ -33,7 +51,7 @@ static void	handle_redirection(t_token **tokens, const char *input,
 	}
 }
 
-static void	handle_special_chars(t_token **tokens, const char *input, size_t *i)
+void	handle_special_chars(t_token **tokens, const char *input, size_t *i)
 {
 	if (input[*i] == '<' || input[*i] == '>')
 		handle_redirection(tokens, input, i, input[*i]);
@@ -44,7 +62,7 @@ static void	handle_special_chars(t_token **tokens, const char *input, size_t *i)
 	}
 }
 
-static int	is_special_char(char c)
+int	is_special_char(char c)
 {
 	return (c == '|' || c == '>' || c == '<');
 }

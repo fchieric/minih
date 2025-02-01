@@ -5,20 +5,19 @@ SRC_DIR = src/
 INC_DIR = include/
 
 # Source files with path
-SRC = $(addprefix $(SRC_DIR), mainmini.c safefunct.c inizializer.c env.c utils1.c, lexer.c, )
+SRC = $(addprefix $(SRC_DIR), env.c ft_matrix.c ft_str_utils.c ft_strings.c inizializer.c lexer_envar.c lexer.c lexerquotes.c lexerutils.c mainmini.c safefunct.c tokens.c)
 OBJ = $(SRC:.c=.o)
 
 # Compiler and flags
 CC = gcc
 INCLUDES = -I$(INC_DIR)
 CFLAGS = -Wall -Wextra -Werror -g $(INCLUDES)
-LDFLAGS = -L/usr/lib/x86_64-linux-gnu -lreadline
+LDFLAGS = -lreadline
 
 # Colors for echo
 BOLD = \033[1m
 RED = \033[31m
 NO_COLOR = \033[0m
-RED = \033[31m
 ORANGE = \033[38;5;214m
 YELLOW = \033[33m
 GREEN = \033[32m
@@ -30,7 +29,7 @@ BLINK = \033[5m
 # Main target
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LDFLAGS)
-	@echo "$(BOLD)Creating  -> $(RED)$(NAME)$(NO_COLOR)"
+	@echo "$(BOLD)Creating -> $(RED)$(NAME)$(NO_COLOR)"
 
 # Object files
 %.o: %.c

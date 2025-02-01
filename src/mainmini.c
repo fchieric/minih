@@ -12,15 +12,53 @@
 
 #include "minishell.h"
 
-int g_whatsup = 0;
+int	g_whatsup = 0;
 
-int main(int ac, char **av, char **env)
+static char	*get_rainbow_prompt(void)
 {
-	t_mini mini;
+	char	*prompt;
+
+	prompt = ft_strdup(RED "m" ORANGE "i" YELLOW "n" GREEN "i" 
+		BLUE "s" INDIGO "h" VIOLET "e" RED "l" ORANGE "l" 
+		INDIGO "> " RESET);
+	return (prompt);
+}
+static void	test_lexer(t_mini *mini)
+{
+	char	*input;
+	t_token	*tokens;
+	char	*rainbow;
+
+	rainbow = get_rainbow_prompt();
+	while (1)
+	{
+		input = readline(rainbow);
+		if (!input)
+			break ;
+		if (*input)
+		{
+			add_history(input);
+			tokens = lexer(mini, input);
+			if (tokens)
+			{
+				print_tokens(tokens);
+				free_tokens(tokens);
+			}
+		}
+		free(input);
+	}
+}
+
+int	main(int ac, char **av, char **env)
+{
+	t_mini	mini;
+
 	(void)ac;
 	(void)av;
-
-	inizializer(&mini, env);		//INIZIALIZZA MINI, COPIA ENV E INIZIALIZZA SHELL
-	printmatrix(mini.envp->env);	//STAMPA ENV
-
+	inizializer(&mini, env);
+	test_lexer(&mini);
+	free_env(mini.envp->env);
+	free_env(mini.envp->exportenv);
+	free(mini.envp);
+	return (0);
 }
