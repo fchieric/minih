@@ -37,22 +37,6 @@ We got very specific tastes when it comes to shells. Here's our ranking:
 <hr>
 
 <div align="center">
-  <h2>Why you should love her</h2>
-</div>
-
-<div align="center">
-  🎨 Lots of colors!<br>
-  🐌 Good hold (presa a bene)<br>
-  🐛 Some bugs to keep her company
-</div>
-
-<div align="center">
-  <img src="https://i.pinimg.com/originals/a4/48/db/a448db719bd43ff73b5cb1359b507fdc.gif" alt="Logo" width="300">
-</div>
-
-<hr>
-
-<div align="center">
   <h2>What we listen playing with Mini</h2>
 </div>
 
@@ -61,5 +45,21 @@ We got very specific tastes when it comes to shells. Here's our ranking:
   🐞 <a href="https://awesomeopensource.com/project/elangosundar/awesome-README-templates">Bug fixing</a><br>
   🎉 <a href="https://www.youtube.com/watch?v=KlyXNRrsk4A&ab_channel=KatyPerryVEVO">The end</a>
 </div>
+
+<div align="center">
+  <h2>Why you should love her</h2>
+</div>
+
+<div align="center">
+  🎨 Lots of colors!<br>
+  🐌 Good hold (presa a bene)<br>
+  🐛 Some bugs to keep her company
+</div>
+<br><br>
+<div align="center">
+  <img src="https://i.pinimg.com/originals/a4/48/db/a448db719bd43ff73b5cb1359b507fdc.gif" alt="Logo" width="300">
+</div>
+
+<hr>
 
 
