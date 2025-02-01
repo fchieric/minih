@@ -34,11 +34,16 @@ static void	test_lexer(t_mini *mini)
 	{
 		input = readline(rainbow);
 		if (!input)
+		{
+			printf(EXIT_MSG);
 			break ;
+		}
 		if (*input)
 		{
 			add_history(input);
 			tokens = lexer(mini, input);
+			if (ft_strcmp("exit", tokens->value) == 0)
+				break ; //dobbiamo fare ft_exit dove facciamo free
 			if (tokens)
 			{
 				print_tokens(tokens);
@@ -52,9 +57,11 @@ static void	test_lexer(t_mini *mini)
 int	main(int ac, char **av, char **env)
 {
 	t_mini	mini;
-
 	(void)ac;
 	(void)av;
+
+	signal(SIGINT, ctrlc);  // Ctrl+C
+	signal(SIGQUIT, SIG_IGN); // Ctrl+\ (ignorato)
 	inizializer(&mini, env);
 	test_lexer(&mini);
 	free_env(mini.envp->env);

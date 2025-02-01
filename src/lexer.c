@@ -79,26 +79,33 @@ void	handle_word(t_token **tokens, const char *input, size_t *i)
 	free(word);
 }
 
-t_token	*lexer(t_mini *mini, const char *input)
+t_token *lexer(t_mini *mini, const char *input)
 {
-	t_token	*tokens;
-	size_t	i;
+    t_token *tokens;
+    size_t  i;
 
-	tokens = NULL;
-	i = 0;
-	while (input && input[i])
-	{
-		if (ft_isspace(input[i]))
-			i++;
-		else if (input[i] == '\'' || input[i] == '"' || input[i] == '$')
-		{
-			if (!process_token(mini, &tokens, input, &i))
-				return (free_tokens(tokens), NULL);
-		}
-		else if (is_special_char(input[i]))
-			handle_special_chars(&tokens, input, &i);
-		else
-			handle_word(&tokens, input, &i);
-	}
-	return (tokens);
+    tokens = NULL;
+    i = 0;
+    while (input && input[i])
+    {
+        if (ft_isspace(input[i]))
+            i++;
+        else if (input[i] == '\'' || input[i] == '"' || input[i] == '$')
+        {
+            if (!process_token(mini, &tokens, input, &i))
+                return (free_tokens(tokens), NULL);
+        }
+        else if (is_special_char(input[i]))
+            handle_special_chars(&tokens, input, &i);
+        else
+            handle_word(&tokens, input, &i);
+    }
+    
+    // Verifica la sequenza di token
+    if (!is_valid_token_sequence(tokens))
+    {
+        free_tokens(tokens);
+        return (NULL);
+    }
+    return (tokens);
 }

@@ -6,7 +6,7 @@
 /*   By: fabi <fabi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 19:47:26 by fabi              #+#    #+#             */
-/*   Updated: 2025/02/01 20:29:59 by fabi             ###   ########.fr       */
+/*   Updated: 2025/02/01 21:42:09 by fabi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,25 +57,27 @@ static char	*get_env_var_name(const char *input, size_t *i)
 	return (var_name);
 }
 
-char	*expand_env_var(t_mini *mini, const char *input, size_t *i)
+char *expand_env_var(t_mini *mini, const char *input, size_t *i)
 {
-	char	*var_name;
-	char	*value;
-	char	*result;
+    char    *var_name;
+    char    *value;
+    char    *result;
+    char    exit_status[12];
 
-	var_name = get_env_var_name(input, i);
-	if (!var_name)
-		return (ft_strdup(""));
-	if (ft_strcmp(var_name, "?") == 0)
-	{
-		free(var_name);
-		return ("0"); //handle_exit_status(mini)
-	}
-	value = get_env_value(mini->envp->env, var_name);
-	free(var_name);
-	if (value)
-		result = ft_strdup(value);
-	else
-		result = ft_strdup("");
-	return (result);
+    var_name = get_env_var_name(input, i);
+    if (!var_name)
+        return (ft_strdup(""));
+    if (ft_strcmp(var_name, "?") == 0)
+    {
+        free(var_name);
+        snprintf(exit_status, 12, "%d", mini->envp->exit_status);
+        return (ft_strdup(exit_status));
+    }
+    value = get_env_value(mini->envp->env, var_name);
+    free(var_name);
+    if (value)
+        result = ft_strdup(value);
+    else
+        result = ft_strdup("");
+    return (result);
 }

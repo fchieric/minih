@@ -5,7 +5,7 @@ SRC_DIR = src/
 INC_DIR = include/
 
 # Source files with path
-SRC = $(addprefix $(SRC_DIR), env.c ft_matrix.c ft_str_utils.c ft_strings.c inizializer.c lexer_envar.c lexer.c lexerquotes.c lexerutils.c mainmini.c safefunct.c tokens.c)
+SRC = $(addprefix $(SRC_DIR), env.c ft_matrix.c ft_str_utils.c ft_strings.c inizializer.c lexer_envar.c lexer.c lexerquotes.c lexerutils.c mainmini.c safefunct.c tokens.c signals.c)
 OBJ = $(SRC:.c=.o)
 
 # Compiler and flags
@@ -29,7 +29,11 @@ BLINK = \033[5m
 # Main target
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LDFLAGS)
-	@echo "$(BOLD)Creating -> $(RED)$(NAME)$(NO_COLOR)"
+	@echo "$(BOLD)$(RED)❤ $(ORANGE)❤ $(YELLOW)👋 "\
+	"$(RED)C$(ORANGE)r$(YELLOW)e$(GREEN)a$(BLUE)t$(INDIGO)i$(VIOLET)n$(RED)g "\
+	"$(ORANGE)->"\
+	" $(YELLOW)m$(GREEN)i$(BLUE)n$(INDIGO)i$(VIOLET)🐚 "\
+	"$(VIOLET)👋 $(RED)❤ $(ORANGE)❤$(NO_COLOR)"
 
 # Object files
 %.o: %.c

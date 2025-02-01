@@ -19,6 +19,7 @@
 # include <string.h>
 # include <readline/readline.h>    /* Per readline() */
 # include <readline/history.h>     /* Per add_history() */
+# include <signal.h>
 
 # define RED "\001\033[1;31m\002"
 # define ORANGE "\001\033[38;5;208m\002"
@@ -28,6 +29,14 @@
 # define INDIGO "\001\033[38;5;93m\002"
 # define VIOLET "\001\033[1;35m\002"
 # define RESET "\001\033[0m\002"
+
+# define EXIT_MSG RED "❤ " ORANGE "❤ " YELLOW "👋 " \
+    RED "T" ORANGE "h" YELLOW "a" GREEN "n" BLUE "k" INDIGO "s " \
+    RED "f" ORANGE "o" YELLOW "r " \
+    GREEN "u" BLUE "s" INDIGO "i" VIOLET "n" RED "g " \
+    ORANGE "M" YELLOW "i" GREEN "n" BLUE "i" "🐚 " \
+    VIOLET "👋 " RED "❤ " ORANGE "❤\n" RESET
+
 extern int g_whatsup; //variabile globale che aggiorna lo status della shell e segnala se è in esecuzione o meno
 
 typedef enum e_token_type
@@ -101,6 +110,8 @@ void	ft_putendl_fd(char *s, int fd);
 void	ft_putstr_fd(char *s, int fd);
 char	*ft_itoa(int n);
 int		ft_strcmp(const char *s1, const char *s2);
+void	ctrlc(int sig);
 char	*ft_substr(const char *s, unsigned int start, size_t len);
+int		is_valid_token_sequence(t_token *tokens);
 
 #endif
