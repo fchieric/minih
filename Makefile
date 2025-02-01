@@ -25,6 +25,7 @@ GREEN = \033[32m
 BLUE = \033[34m
 INDIGO = \033[38;5;54m
 VIOLET = \033[35m
+BLINK = \033[5m
 
 # Main target
 $(NAME): $(OBJ)
