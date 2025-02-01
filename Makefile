@@ -5,7 +5,7 @@ SRC_DIR = src/
 INC_DIR = include/
 
 # Source files with path
-SRC = $(addprefix $(SRC_DIR), mainmini.c safefunct.c inizializer.c env.c utils1.c)
+SRC = $(addprefix $(SRC_DIR), mainmini.c safefunct.c inizializer.c env.c utils1.c, lexer.c, )
 OBJ = $(SRC:.c=.o)
 
 # Compiler and flags

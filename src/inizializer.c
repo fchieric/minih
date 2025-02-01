@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+void inizializer(t_mini *mini, char **env);
+
 void inizializer(t_mini *mini, char **env)
 {
 	mini->envp = safe_malloc(sizeof(t_env));
