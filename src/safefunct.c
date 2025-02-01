@@ -21,5 +21,5 @@ void	*safe_malloc(size_t size)
 	{
 		write(2, "Error: Malloc failed\n", 21);
 	}
-	return (ret);
+	return (ret);
 }

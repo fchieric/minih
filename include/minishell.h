@@ -16,6 +16,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <string.h>
 
 extern int g_whatsup; //variabile globale che aggiorna lo status della shell e segnala se è in esecuzione o meno
 
@@ -32,8 +33,5 @@ typedef struct s_mini
 }t_mini;
 
 void	*safe_malloc(size_t size);
-void inizializer(t_mini *mini, int ac, char **av);
-void printmatrix (char **matrix);
-void copyenv(char **av);
 
 #endif

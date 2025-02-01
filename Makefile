@@ -18,12 +18,18 @@ LDFLAGS = -L/usr/lib/x86_64-linux-gnu -lreadline
 BOLD = \033[1m
 RED = \033[31m
 NO_COLOR = \033[0m
+RED = \033[31m
+ORANGE = \033[38;5;214m
+YELLOW = \033[33m
+GREEN = \033[32m
+BLUE = \033[34m
+INDIGO = \033[38;5;54m
+VIOLET = \033[35m
 
 # Main target
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LDFLAGS)
 	@echo "$(BOLD)Creating  -> $(RED)$(NAME)$(NO_COLOR)"
-	@$(MAKE) minipd
 
 # Object files
 %.o: %.c
@@ -38,21 +44,23 @@ fclean: clean
 
 re: fclean all
 
-all: $(NAME)
+all: $(NAME) minipd
 
 # ASCII art
 minipd:
-	@echo '                       t    EW:        ,ft  t'
-	@echo '           ..       :  Ej   E##;       t#E  Ej'
-	@echo '          ,W,     .Et  E#,  E###t      t#E  E#,'
-	@echo '         t##,    ,W#t  E#t  E#fE#f     t#E  E#t'
-	@echo '        L###,   j###t  E#t  E#t D#G    t#E  E#t'
-	@echo '      .E#j##,  G#fE#t  E#t  E#t  f#E.  t#E  E#t'
-	@echo '     ;WW; ##,:K#i E#t  E#t  E#t   t#K: t#E  E#t'
-	@echo '    j#E.  ##f#W,  E#t  E#t  E#t    ;#W,t#E  E#t'
-	@echo '  .D#L    ###K:   E#t  E#t  E#t     :K#D#E  E#t'
-	@echo ' :K#t     ##D.    E#t  E#t  E#t      .E##E  E#t'
-	@echo ' ...      #G      ..   E#t  ..         G#E  E#t'
-	@echo '          j            ,;.              fE  ,;.'
+	@echo -e ' '
+	@echo -e '$(RED)                       t    EW:        ,ft  t$(NO_COLOR)'
+	@echo -e '$(ORANGE)           ..       :  Ej   E##;       t#E  Ej$(NO_COLOR)'
+	@echo -e '$(YELLOW)          ,W,     .Et  E#,  E###t      t#E  E#,$(NO_COLOR)'
+	@echo -e '$(GREEN)         t##,    ,W#t  E#t  E#fE#f     t#E  E#t$(NO_COLOR)'
+	@echo -e '$(BLUE)        L###,   j###t  E#t  E#t D#G    t#E  E#t$(NO_COLOR)'
+	@echo -e '$(INDIGO)      .E#j##,  G#fE#t  E#t  E#t  f#E.  t#E  E#t$(NO_COLOR)'
+	@echo -e '$(VIOLET)     ;WW; ##,:K#i E#t  E#t  E#t   t#K: t#E  E#t$(NO_COLOR)'
+	@echo -e '$(RED)    j#E.  ##f#W,  E#t  E#t  E#t    ;#W,t#E  E#t$(NO_COLOR)'
+	@echo -e '$(ORANGE)  .D#L    ###K:   E#t  E#t  E#t     :K#D#E  E#t$(NO_COLOR)'
+	@echo -e '$(YELLOW) :K#t     ##D.    E#t  E#t  E#t      .E##E  E#t$(NO_COLOR)'
+	@echo -e '$(GREEN) ...      #G      ..   E#t  ..         G#E  E#t$(NO_COLOR)'
+	@echo -e '$(BLUE)          j            ,;.              fE  ,;. $(NO_COLOR)'
+	@echo -e ' '
 
-.PHONY: clean fclean re all minipd
+.PHONY: clean fclean re all minipd
