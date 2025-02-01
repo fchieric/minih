@@ -1,6 +1,4 @@
 # minih
 
 
-We're building
-<span style="background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">a small gay shell</span>
-(evviva!)
+![WE ARE BUILDING A SMALL SHELL!]([https://via.placeholder.com/468x300?text=App+Screenshot+Here](https://cdn.britannica.com/27/131227-050-4DAD6A15/snail.jpg))
