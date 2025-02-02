@@ -94,6 +94,11 @@ int		is_special_char(char c);
 char	*process_var_in_quotes(t_mini *mini, const char *input, size_t *i, char *result);
 char	*handle_double_quotes(t_mini *mini, const char *input, size_t *i);
 void	handle_redirection(t_token **tokens, const char *input, size_t *i, char type);
+int		handleword(t_token *token, t_mini *mini);
+int		builtin(char *line);
+void	builtinexe(t_token *token, char **envp);
+void	process_tokens(t_token *token, t_mini *mini);
+
 
 /* String utilities */
 char	*ft_strdup(const char *s1);
@@ -113,5 +118,6 @@ int		ft_strcmp(const char *s1, const char *s2);
 void	ctrlc(int sig);
 char	*ft_substr(const char *s, unsigned int start, size_t len);
 int		is_valid_token_sequence(t_token *tokens);
+void	printmatrix(char **matrix);
 
 #endif

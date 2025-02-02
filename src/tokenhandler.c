@@ -12,31 +12,31 @@
 
 #include "minishell.h"
 
-void process_tokens(t_token **token)
+void process_tokens(t_token *token, t_mini *mini)
 {
-    t_token *current;
+    t_token *tmp;
 
-    if (!token || !(*token))
+    if (!token || !(token))
         return;
 
-    current = *token;
-    while (current)
+    tmp = token;
+    while (tmp)
     {
-        if (current->type == TOKEN_WORD)
-            handleword(current);
-        else if (current->type == TOKEN_PIPE)
-            handlepipe(current);
-        else if (current->type == TOKEN_REDIR_IN || current->type == TOKEN_REDIR_OUT ||
-                 current->type == TOKEN_HEREDOC || current->type == TOKEN_APPEND)
-            handleredirection(current);
-        else if (current->type == TOKEN_VAR)
-            handlevariable(current);
-        else if (current->type == TOKEN_TEXT)
-            handletext(current);
+        if (tmp->type == TOKEN_WORD)
+            handleword(tmp, mini);
+        // else if (tmp->type == TOKEN_PIPE)
+        //     handlepipe(tmp);
+        // else if (tmp->type == TOKEN_REDIR_IN || tmp->type == TOKEN_REDIR_OUT ||
+        //          tmp->type == TOKEN_HEREDOC || tmp->type == TOKEN_APPEND)
+        //     handleredirection(tmp);
+        // else if (tmp->type == TOKEN_VAR)
+        //     handlevariable(tmp);
+        // else if (tmp->type == TOKEN_TEXT)
+        //     handletext(tmp);
         else
-            printf("Unknown token: %s\n", current->value);
+            printf("Unknown token: %s\n", tmp->value);
 
-        current = current->next;
+        tmp = tmp->next;
     }
 }
 
