@@ -28,7 +28,8 @@
 # define BLUE "\001\033[1;34m\002"
 # define INDIGO "\001\033[38;5;93m\002"
 # define VIOLET "\001\033[1;35m\002"
-# define RESET "\001\033[0m\002"
+# define SLAY "\e[45m"
+# define RESET "\e[0m"
 
 # define EXIT_MSG RED "❤ " ORANGE "❤ " YELLOW "👋 " \
     RED "T" ORANGE "h" YELLOW "a" GREEN "n" BLUE "k" INDIGO "s " \

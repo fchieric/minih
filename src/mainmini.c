@@ -20,11 +20,12 @@ static char	*get_rainbow_prompt(t_mini *mini)
 	char 	*pivud;
 	char	*endprompt;
 
-	prompt = ft_strdup(RED "m" ORANGE "i" YELLOW "n" GREEN "i"
+	prompt = ft_strdup("🐚" " "RED "m" ORANGE "i" YELLOW "n" GREEN "i"
 		BLUE "s" INDIGO "h" VIOLET "e" RED "l" ORANGE "l"
 		INDIGO ": " "🌈 "RESET);
 	pivud= ft_strdup((const char*)ft_pwd(mini->envp->env));
-	endprompt = ft_strdup( "🌈"" " INDIGO "> " RESET);
+	pivud = ft_strjoin(SLAY, pivud);
+	endprompt = ft_strdup(RESET" ""🌈"" " INDIGO "> " RESET);
 	prompt = ft_strjoin(prompt, pivud);
 	prompt = ft_strjoin(prompt, endprompt);
 	free(pivud);
