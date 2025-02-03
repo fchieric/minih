@@ -39,6 +39,28 @@
 
 extern int g_whatsup; //variabile globale che aggiorna lo status della shell e segnala se è in esecuzione o meno
 
+//per dare un senso ai token word
+
+typedef enum e_cmd_type
+{
+    CMD_BUILTIN,
+    CMD_EXTERNAL,
+    CMD_NONE
+}   t_cmd_type;
+
+typedef struct s_command
+{
+    char            *name;         // nome del comando
+    char            **args;        // array di argomenti (inclusi flag)
+    char            **flags;       // array di flag
+    t_cmd_type      type;         // tipo di comando
+    char            *infile;       // file di input (<)
+    char            *outfile;      // file di output (>)
+    char            *heredoc;      // delimititatore heredoc (<<)
+    char            *append;       // file append (>>)
+    struct s_command *next;        // prossimo comando (dopo pipe)
+}   t_command;
+
 typedef enum e_token_type
 {
 	TOKEN_WORD,
@@ -113,5 +135,14 @@ int		ft_strcmp(const char *s1, const char *s2);
 void	ctrlc(int sig);
 char	*ft_substr(const char *s, unsigned int start, size_t len);
 int		is_valid_token_sequence(t_token *tokens);
+
+//per i comandi
+
+t_command    *parse_tokens(t_token *tokens);
+t_command    *init_command(void);
+void        free_command(t_command *cmd);
+void        free_commands(t_command *cmds);
+int         is_builtin(const char *cmd);
+char        **add_to_array(char **arr, char *str);
 
 #endif
