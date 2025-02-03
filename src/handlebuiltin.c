@@ -93,8 +93,33 @@ void ft_setenv(char **envp, const char *name, const char *value)
         i++;
     }
 }
+void ft_echo(t_token *token)
+{
+    t_token *temp = token->next;  // Start from the token after the command
 
-// ft_cd function
+    while (temp)  // Iterate through the rest of the tokens (arguments)
+    {
+        printf("%s", temp->value);  // Print each argument
+        if (temp->next)  // If not the last argument, print space
+            printf(" ");
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+void ft_echon(t_token *token)
+{
+    t_token *temp = token->next;
+
+    while (temp)
+    {
+        printf("%s", temp->value);
+        if (temp->next)
+            printf(" ");
+        temp = temp->next;
+    }
+}
+
 void ft_cd(t_token *token, t_mini *mini)
 {
     char *path = NULL;
@@ -105,7 +130,6 @@ void ft_cd(t_token *token, t_mini *mini)
         perror("cd");
         return;
     }
-
     if (token->next)
         path = token->next->value;
 
@@ -113,14 +137,12 @@ void ft_cd(t_token *token, t_mini *mini)
         path = ft_getenv(mini->envp->env, "HOME");
     else if (strcmp(path, "-") == 0)
         path = ft_getenv(mini->envp->env, "OLDPWD");
-
     if (!path)
     {
         fprintf(stderr, "cd: No such file or directory\n");
         free(old_pwd);
         return;
     }
-
     if (chdir(path) != 0)
         perror("cd");
     else
@@ -130,7 +152,6 @@ void ft_cd(t_token *token, t_mini *mini)
         ft_setenv(mini->envp->env, "PWD", new_pwd);
         free(new_pwd);
     }
-
     free(old_pwd);
 }
 
@@ -141,8 +162,15 @@ void builtinexe(t_token *token, t_mini *mini)
 
 	b = builtin(token->value);
 
-	// if(b = 1)
-	// 	fecho
+	 if(b == 1)
+	{
+		if(token->next)
+			tmp = token->next->value;
+		if (ft_strcmp(tmp, "-n") == 0)
+			ft_echon(token);
+		else
+		ft_echo(token);
+	}
 	if(b == 2)
 	 	ft_cd(token, mini);
 	if(b == 3)
