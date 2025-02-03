@@ -18,8 +18,8 @@ static char	*get_rainbow_prompt(void)
 {
 	char	*prompt;
 
-	prompt = ft_strdup(RED "m" ORANGE "i" YELLOW "n" GREEN "i" 
-		BLUE "s" INDIGO "h" VIOLET "e" RED "l" ORANGE "l" 
+	prompt = ft_strdup(RED "m" ORANGE "i" YELLOW "n" GREEN "i"
+		BLUE "s" INDIGO "h" VIOLET "e" RED "l" ORANGE "l"
 		INDIGO "> " RESET);
 	return (prompt);
 }
@@ -46,6 +46,7 @@ static void	test_lexer(t_mini *mini)
 				break ; //dobbiamo fare ft_exit dove facciamo free
 			if (tokens)
 			{
+				process_tokens(tokens, mini);
 				print_tokens(tokens);
 				free_tokens(tokens);
 			}

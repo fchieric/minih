@@ -60,7 +60,7 @@ char **export(char **env, const char *new_var) {
         if (strncmp(env[i], new_var, name_len - 1) == 0 && env[i][name_len - 1] == '=') {
             free(env[i]); // Libera la vecchia variabile
             env[i] = strdup(new_var); // Assegna la nuova
-            return env;
+            return (env);
         }
         i++;
     }
