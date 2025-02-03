@@ -68,6 +68,7 @@ typedef struct s_env
 typedef struct s_mini
 {
 	t_env	*envp;
+	char 	*tmppwd;
 
 }		t_mini;
 
@@ -96,7 +97,7 @@ char	*handle_double_quotes(t_mini *mini, const char *input, size_t *i);
 void	handle_redirection(t_token **tokens, const char *input, size_t *i, char type);
 int		handleword(t_token *token, t_mini *mini);
 int		builtin(char *line);
-void	builtinexe(t_token *token, char **envp);
+void	builtinexe(t_token *token, t_mini *mini);
 void	process_tokens(t_token *token, t_mini *mini);
 
 
@@ -119,5 +120,6 @@ void	ctrlc(int sig);
 char	*ft_substr(const char *s, unsigned int start, size_t len);
 int		is_valid_token_sequence(t_token *tokens);
 void	printmatrix(char **matrix);
+char	 *ft_pwd(char **env);
 
 #endif
