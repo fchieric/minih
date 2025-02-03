@@ -42,7 +42,7 @@ We got very specific tastes when it comes to shells. Here's our ranking:
 
 <div align="center">
   🎶 <a href="https://www.youtube.com/watch?v=CgVIzt2cAog&t=144s&ab_channel=EmmePi">The start</a><br>
-  🐞 <a href="https://awesomeopensource.com/project/elangosundar/awesome-README-templates">Bug fixing</a><br>
+  🐞 <a href="https://www.youtube.com/watch?v=eT3BFzSD6YY&ab_channel=ThisIsThatGuy">Bug fixing</a><br>
   🎉 <a href="https://www.youtube.com/watch?v=KlyXNRrsk4A&ab_channel=KatyPerryVEVO">The end</a>
 </div>
 
