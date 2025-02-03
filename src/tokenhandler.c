@@ -12,52 +12,125 @@
 
 #include "minishell.h"
 
-void process_tokens(t_token *token, t_mini *mini)
+void process_tokens(t_token *tokens, t_mini *mini)
 {
-    t_token *tmp;
-
-    if (!token || !(token))
+    t_command *cmd;
+    
+    if (!tokens)
         return;
 
-    tmp = token;
-    while (tmp)
-    {
-        if (tmp->type == TOKEN_WORD)
-            handleword(tmp, mini);
-        // else if (tmp->type == TOKEN_PIPE)
-        //     handlepipe(tmp);
-        // else if (tmp->type == TOKEN_REDIR_IN || tmp->type == TOKEN_REDIR_OUT ||
-        //          tmp->type == TOKEN_HEREDOC || tmp->type == TOKEN_APPEND)
-        //     handleredirection(tmp);
-        // else if (tmp->type == TOKEN_VAR)
-        //     handlevariable(tmp);
-        // else if (tmp->type == TOKEN_TEXT)
-        //     handletext(tmp);
-        else
-            printf("Unknown token: %s\n", tmp->value);
+    // Usa il parser per convertire i token in comandi
+    cmd = parse_tokens(tokens);
+    if (!cmd)
+        return;
 
-        tmp = tmp->next;
+    // Debug: stampa i token come prima
+    print_tokens(tokens);
+
+    // Esegui i comandi
+    execute_commands(cmd, mini);
+
+    // Libera la memoria
+    free_commands(cmd);
+}
+
+void execute_commands(t_command *cmd, t_mini *mini)
+{
+    t_token *tmp_token;
+
+    while (cmd)
+    {
+        if (cmd->type == CMD_BUILTIN)
+        {
+            // Crea un token temporaneo per handleword
+            tmp_token = safe_malloc(sizeof(t_token));
+            if (!tmp_token)
+                return;
+            tmp_token->type = TOKEN_WORD;
+            tmp_token->value = ft_strdup(cmd->args[0]);
+            tmp_token->next = NULL;
+            
+            handleword(tmp_token, mini);
+            
+            // Libera il token temporaneo
+            free(tmp_token->value);
+            free(tmp_token);
+        }
+        else if (cmd->type == CMD_EXTERNAL)
+        {
+            execute_external_command(cmd, mini);
+        }
+        cmd = cmd->next;
     }
 }
 
+void execute_external_command(t_command *cmd, t_mini *mini)
+{
+    pid_t pid;
+    int status;
 
-// handleword(t_token *token)
+    pid = fork();
+    if (pid == -1)
+    {
+        perror("fork");
+        return;
+    }
 
-// Handles regular words (commands, arguments).
-// Example: If the input is "echo", it may store or execute it.
-// handlepipe(t_token *token)
+    if (pid == 0)
+    {
+        // Processo figlio
+        
+        // Gestisci le redirezioni se presenti
+        if (cmd->infile)
+            redirect_input(cmd->infile);
+        if (cmd->outfile)
+            redirect_output(cmd->outfile, 0);  // 0 per troncamento
+        if (cmd->append)
+            redirect_output(cmd->append, 1);   // 1 per append
 
-// Handles the | (pipe) token.
-// This usually connects the output of one command to the input of another.
-// handleredirection(t_token *token)
+        // Esegui il comando
+        execvp(cmd->name, cmd->args);
+        
+        // Se execvp fallisce
+        perror(cmd->name);
+        exit(127);
+    }
+    else
+    {
+        // Processo padre
+        waitpid(pid, &status, 0);
+        if (WIFEXITED(status))
+            mini->envp->exit_status = WEXITSTATUS(status);
+    }
+}
 
-// Handles <, >, >>, << (input/output redirections).
-// It should open files, duplicate file descriptors, or manage redirection logic.
-// handlevariable(t_token *token)
+void redirect_input(const char *filename)
+{
+    int fd = open(filename, O_RDONLY);
+    if (fd == -1)
+    {
+        perror(filename);
+        exit(1);
+    }
+    dup2(fd, STDIN_FILENO);
+    close(fd);
+}
 
-// Handles shell variables (e.g., $HOME, $USER).
-// Likely expands them to their actual values.
-// handletext(t_token *token)
-
-// Handles quoted strings ("hello" or 'hello').
-// Ensures proper parsing and handling of special characters.
+void redirect_output(const char *filename, int append_mode)
+{
+    int flags = O_WRONLY | O_CREAT;
+    
+    if (append_mode)
+        flags |= O_APPEND;
+    else
+        flags |= O_TRUNC;
+    
+    int fd = open(filename, flags, 0644);
+    if (fd == -1)
+    {
+        perror(filename);
+        exit(1);
+    }
+    dup2(fd, STDOUT_FILENO);
+    close(fd);
+}

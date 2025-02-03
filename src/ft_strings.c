@@ -6,7 +6,7 @@
 /*   By: fabi <fabi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 20:04:04 by fabi              #+#    #+#             */
-/*   Updated: 2025/02/01 20:40:42 by fabi             ###   ########.fr       */
+/*   Updated: 2025/02/03 16:13:22 by fabi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,4 +131,78 @@ int	ft_strcmp(const char *s1, const char *s2)
 	while (s1[i] && s2[i] && s1[i] == s2[i])
 		i++;
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+}
+
+/* ft_split.c */
+#include "minishell.h"
+
+static size_t count_words(const char *s, char c)
+{
+    size_t count;
+    int in_word;
+
+    count = 0;
+    in_word = 0;
+    while (*s)
+    {
+        if (*s != c && !in_word)
+        {
+            in_word = 1;
+            count++;
+        }
+        else if (*s == c)
+            in_word = 0;
+        s++;
+    }
+    return count;
+}
+
+static char *get_next_word(const char **s, char c)
+{
+    const char *start;
+    size_t len;
+    char *word;
+
+    while (**s == c)
+        (*s)++;
+    start = *s;
+    len = 0;
+    while (**s && **s != c)
+    {
+        len++;
+        (*s)++;
+    }
+    word = ft_substr(start, 0, len);
+    return word;
+}
+
+char **ft_split(const char *s, char c)
+{
+    char **result;
+    size_t word_count;
+    size_t i;
+
+    if (!s)
+        return NULL;
+
+    word_count = count_words(s, c);
+    result = safe_malloc(sizeof(char *) * (word_count + 1));
+    if (!result)
+        return NULL;
+
+    i = 0;
+    while (i < word_count)
+    {
+        result[i] = get_next_word(&s, c);
+        if (!result[i])
+        {
+            while (i > 0)
+                free(result[--i]);
+            free(result);
+            return NULL;
+        }
+        i++;
+    }
+    result[i] = NULL;
+    return result;
 }

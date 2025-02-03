@@ -20,6 +20,10 @@
 # include <readline/readline.h>    /* Per readline() */
 # include <readline/history.h>     /* Per add_history() */
 # include <signal.h>
+#include <fcntl.h>      /* Per O_RDONLY, O_WRONLY, O_CREAT, ecc. */
+#include <sys/types.h>  /* Per mode_t */
+#include <sys/stat.h>   /* Per mode_t */
+#include <sys/wait.h>
 
 # define RED "\001\033[1;31m\002"
 # define ORANGE "\001\033[38;5;208m\002"
@@ -60,6 +64,14 @@ typedef struct s_command
     char            *append;       // file append (>>)
     struct s_command *next;        // prossimo comando (dopo pipe)
 }   t_command;
+
+typedef struct s_redirs
+{
+	int		in_fd;
+	int		out_fd;
+	char	*heredoc_del;
+	int		append_mode;
+}	t_redirs;
 
 typedef enum e_token_type
 {
@@ -150,5 +162,35 @@ void        free_command(t_command *cmd);
 void        free_commands(t_command *cmds);
 int         is_builtin(const char *cmd);
 char        **add_to_array(char **arr, char *str);
+
+void handle_command_redirection(t_command *cmd, t_token *curr);
+
+
+/* Command execution functions */
+int     execute_command(t_command *cmd, t_mini *mini);
+int     execute_builtin(t_command *cmd, t_mini *mini);
+int     execute_external(t_command *cmd, t_mini *mini);
+char    *find_command_path(const char *cmd, char **env);
+void    setup_redirections(t_command *cmd);
+
+/* Builtin commands */
+int     ft_echo(char **args);
+int     ft_cd(char **args, char **env);
+void     ft_pwd(char **env);
+int     ft_export(char **args, t_mini *mini);
+int     ft_unset(char **args, t_mini *mini);
+int     ft_env(char **env);
+int     ft_exit(char **args, t_mini *mini);
+
+/* Utils functions */
+char    **ft_split(const char *s, char c);
+void    free_commands(t_command *cmd);
+
+void execute_commands(t_command *cmd, t_mini *mini);
+void execute_external_command(t_command *cmd, t_mini *mini);
+void redirect_input(const char *filename);
+void redirect_output(const char *filename, int append_mode);
+
+void	free_matrix(char **matrix);
 
 #endif
