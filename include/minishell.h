@@ -25,6 +25,8 @@
 #include <sys/stat.h>   /* Per mode_t */
 #include <sys/wait.h>
 
+#define HEREDOC_TMP "/tmp/.minishell_heredoc"
+
 # define RED "\001\033[1;31m\002"
 # define ORANGE "\001\033[38;5;208m\002"
 # define YELLOW "\001\033[1;33m\002"
@@ -105,6 +107,15 @@ typedef struct s_mini
 
 }		t_mini;
 
+typedef struct s_pipe_state {
+    int     *pipe_fds;      // Array di file descriptors per le pipe
+    int     pipe_count;     // Numero di pipe
+    pid_t   *child_pids;    // Array di PID dei processi figli
+    int     cmd_count;      // Numero totale di comandi
+    int     original_stdin; // File descriptor originale di stdin
+    int     original_stdout; // File descriptor originale di stdout
+} t_pipe_state;
+
 /* Initialization */
 void	inizializer(t_mini *mini, char **env);
 void	*safe_malloc(size_t size);
@@ -138,7 +149,6 @@ void	process_tokens(t_token *token, t_mini *mini);
 char	*ft_strdup(const char *s1);
 char	*ft_substr(const char *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);
-char	*ft_strjoin_free(char *s1, char *s2);
 size_t	ft_strlen(const char *s);
 void	ft_strncpy(char *dst, const char *src, size_t n);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
@@ -147,7 +157,6 @@ int		ft_isspace(int c);
 int		ft_isalnum(int c);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putstr_fd(char *s, int fd);
-char	*ft_itoa(int n);
 int		ft_strcmp(const char *s1, const char *s2);
 void	ctrlc(int sig);
 char	*ft_substr(const char *s, unsigned int start, size_t len);
@@ -158,29 +167,16 @@ void	printmatrix(char **matrix);
 
 t_command    *parse_tokens(t_token *tokens);
 t_command    *init_command(void);
-void        free_command(t_command *cmd);
 void        free_commands(t_command *cmds);
-int         is_builtin(const char *cmd);
 char        **add_to_array(char **arr, char *str);
 
 void handle_command_redirection(t_command *cmd, t_token *curr);
 
 
 /* Command execution functions */
-int     execute_command(t_command *cmd, t_mini *mini);
-int     execute_builtin(t_command *cmd, t_mini *mini);
-int     execute_external(t_command *cmd, t_mini *mini);
-char    *find_command_path(const char *cmd, char **env);
-void    setup_redirections(t_command *cmd);
 
 /* Builtin commands */
-int     ft_echo(char **args);
-int     ft_cd(char **args, char **env);
 void     ft_pwd(char **env);
-int     ft_export(char **args, t_mini *mini);
-int     ft_unset(char **args, t_mini *mini);
-int     ft_env(char **env);
-int     ft_exit(char **args, t_mini *mini);
 
 /* Utils functions */
 char    **ft_split(const char *s, char c);
@@ -192,5 +188,17 @@ void redirect_input(const char *filename);
 void redirect_output(const char *filename, int append_mode);
 
 void	free_matrix(char **matrix);
+
+
+
+// Signal handling
+void    setup_parent_signals(void);
+void    setup_child_signals(void);
+void    sigquit_handler(int sig);
+void    terminate_child_processes(t_pipe_state *state, int sig);
+
+// Modifica nel minishell.h
+void    execute_single_command(t_command *cmd, t_mini *mini, int input_fd, int output_fd);
+char    *find_command_path(char *cmd, char **env);  // Rimuovi const
 
 #endif

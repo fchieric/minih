@@ -19,13 +19,13 @@ void process_tokens(t_token *tokens, t_mini *mini)
     if (!tokens)
         return;
 
+    // Debug: stampa i token una sola volta
+    print_tokens(tokens);
+
     // Usa il parser per convertire i token in comandi
     cmd = parse_tokens(tokens);
     if (!cmd)
         return;
-
-    // Debug: stampa i token come prima
-    print_tokens(tokens);
 
     // Esegui i comandi
     execute_commands(cmd, mini);
@@ -79,6 +79,7 @@ void execute_external_command(t_command *cmd, t_mini *mini)
     if (pid == 0)
     {
         // Processo figlio
+        setup_child_signals();
         
         // Gestisci le redirezioni se presenti
         if (cmd->infile)
