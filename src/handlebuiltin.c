@@ -155,6 +155,7 @@ void ft_cd(t_token *token, t_mini *mini)
     free(old_pwd);
 }
 
+
 void builtinexe(t_token *token, t_mini *mini)
 {
 	int b;
@@ -162,7 +163,7 @@ void builtinexe(t_token *token, t_mini *mini)
 
 	b = builtin(token->value);
 
-	 if(b == 1)
+	if(b == 1)
 	{
 		if(token->next)
 			tmp = token->next->value;
@@ -171,18 +172,19 @@ void builtinexe(t_token *token, t_mini *mini)
 		else
 		ft_echo(token);
 	}
-	if(b == 2)
+	else if(b == 2)
 	 	ft_cd(token, mini);
-	if(b == 3)
+	else if(b == 3)
 	{
 		tmp = ft_pwd(mini->envp->env) ;
 		printf("%s\n", tmp);
 	}
-	if(b == 4)
+	else if(b == 4)
 	 	 printmatrix(mini->envp->env);
-	// if(b == 5)
-	// 	mini->envp->env = export(mini->envp->env, token->next->value);
-	// if(b = 6)
-	// 	env = unset_env(env, "-----------------")
-	// free_env(env);
+	else if (b == 5)
+    {
+       export(mini->envp->env, token->next->value);
+    }
+// 	if(b == 6)
+// 	    unset(token->next->value);
 }

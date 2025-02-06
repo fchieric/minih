@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
+#include <stdarg.h>
 # include <readline/readline.h>    /* Per readline() */
 # include <readline/history.h>     /* Per add_history() */
 # include <signal.h>
@@ -82,6 +83,7 @@ char	**export(char **env, const char *new_var);
 char	**copyenv(char **envp);
 void	free_env(char **env);
 char	*get_env_value(char **env, const char *name);
+void unset(t_mini *mini, const char *var_name);
 
 /* Lexer functions */
 t_token	*lexer(t_mini *mini, const char *input);
