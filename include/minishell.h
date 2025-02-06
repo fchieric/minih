@@ -39,11 +39,11 @@
 # define RESET "\e[0m"
 
 # define EXIT_MSG RED "❤ " ORANGE "❤ " YELLOW "👋 " \
-    RED "T" ORANGE "h" YELLOW "a" GREEN "n" BLUE "k" INDIGO "s " \
-    RED "f" ORANGE "o" YELLOW "r " \
-    GREEN "u" BLUE "s" INDIGO "i" VIOLET "n" RED "g " \
-    ORANGE "M" YELLOW "i" GREEN "n" BLUE "i" "🐚 " \
-    VIOLET "👋 " RED "❤ " ORANGE "❤\n" RESET
+	RED "T" ORANGE "h" YELLOW "a" GREEN "n" BLUE "k" INDIGO "s " \
+	RED "f" ORANGE "o" YELLOW "r " \
+	GREEN "u" BLUE "s" INDIGO "i" VIOLET "n" RED "g " \
+	ORANGE "M" YELLOW "i" GREEN "n" BLUE "i" "🐚 " \
+	VIOLET "👋 " RED "❤ " ORANGE "❤\n" RESET
 
 extern int g_whatsup; //variabile globale che aggiorna lo status della shell e segnala se è in esecuzione o meno
 
@@ -51,22 +51,22 @@ extern int g_whatsup; //variabile globale che aggiorna lo status della shell e s
 
 typedef enum e_cmd_type
 {
-    CMD_BUILTIN,
-    CMD_EXTERNAL,
-    CMD_NONE
+	CMD_BUILTIN,
+	CMD_EXTERNAL,
+	CMD_NONE
 }   t_cmd_type;
 
 typedef struct s_command
 {
-    char            *name;         // nome del comando
-    char            **args;        // array di argomenti (inclusi flag)
-    char            **flags;       // array di flag
-    t_cmd_type      type;         // tipo di comando
-    char            *infile;       // file di input (<)
-    char            *outfile;      // file di output (>)
-    char            *heredoc;      // delimititatore heredoc (<<)
-    char            *append;       // file append (>>)
-    struct s_command *next;        // prossimo comando (dopo pipe)
+	char            *name;         // nome del comando
+	char            **args;        // array di argomenti (inclusi flag)
+	char            **flags;       // array di flag
+	t_cmd_type      type;         // tipo di comando
+	char            *infile;       // file di input (<)
+	char            *outfile;      // file di output (>)
+	char            *heredoc;      // delimititatore heredoc (<<)
+	char            *append;       // file append (>>)
+	struct s_command *next;        // prossimo comando (dopo pipe)
 }   t_command;
 
 typedef struct s_redirs
@@ -111,12 +111,12 @@ typedef struct s_mini
 }		t_mini;
 
 typedef struct s_pipe_state {
-    int     *pipe_fds;      // Array di file descriptors per le pipe
-    int     pipe_count;     // Numero di pipe
-    pid_t   *child_pids;    // Array di PID dei processi figli
-    int     cmd_count;      // Numero totale di comandi
-    int     original_stdin; // File descriptor originale di stdin
-    int     original_stdout; // File descriptor originale di stdout
+	int		*pipe_fds;      // Array di file descriptors per le pipe
+	int		pipe_count;     // Numero di pipe
+	pid_t	*child_pids;    // Array di PID dei processi figli
+	int		cmd_count;      // Numero totale di comandi
+	int		original_stdin; // File descriptor originale di stdin
+	int		original_stdout; // File descriptor originale di stdout
 } t_pipe_state;
 
 /* Initialization */
@@ -124,11 +124,9 @@ void	inizializer(t_mini *mini, char **env);
 void	*safe_malloc(size_t size);
 
 /* Environment functions */
-char	**export(char **env, const char *new_var);
 char	**copyenv(char **envp);
 void	free_env(char **env);
 char	*get_env_value(char **env, const char *name);
-void unset(t_mini *mini, const char *var_name);
 
 /* Lexer functions */
 t_token	*lexer(t_mini *mini, const char *input);
@@ -169,10 +167,10 @@ void	printmatrix(char **matrix);
 
 //per i comandi
 
-t_command    *parse_tokens(t_token *tokens);
-t_command    *init_command(void);
-void        free_commands(t_command *cmds);
-char        **add_to_array(char **arr, char *str);
+t_command	*parse_tokens(t_token *tokens);
+t_command	*init_command(void);
+void		free_commands(t_command *cmds);
+char		**add_to_array(char **arr, char *str);
 
 void handle_command_redirection(t_command *cmd, t_token *curr);
 
@@ -181,28 +179,34 @@ void handle_command_redirection(t_command *cmd, t_token *curr);
 
 /* Builtin commands */
 char	 *ft_pwd(char **env);
+void	unset(t_mini *mini, const char *var_name);
+char	**export(char **env, const char *new_var);
+void	ft_echo(t_token *token);
+void	ft_echon(t_token *token);
+void	ft_cd(t_token *token, t_mini *mini);
+
 
 /* Utils functions */
-char    **ft_split(const char *s, char c);
-void    free_commands(t_command *cmd);
+char	**ft_split(const char *s, char c);
+void	free_commands(t_command *cmd);
 
-void execute_commands(t_command *cmd, t_mini *mini);
-void execute_external_command(t_command *cmd, t_mini *mini);
-void redirect_input(const char *filename);
-void redirect_output(const char *filename, int append_mode);
+void	execute_commands(t_command *cmd, t_mini *mini);
+void	execute_external_command(t_command *cmd, t_mini *mini);
+void	redirect_input(const char *filename);
+void	redirect_output(const char *filename, int append_mode);
 
 void	free_matrix(char **matrix);
 
 
 
 // Signal handling
-void    setup_parent_signals(void);
-void    setup_child_signals(void);
-void    sigquit_handler(int sig);
-void    terminate_child_processes(t_pipe_state *state, int sig);
+void	setup_parent_signals(void);
+void	setup_child_signals(void);
+void	sigquit_handler(int sig);
+void	terminate_child_processes(t_pipe_state *state, int sig);
 
 // Modifica nel minishell.h
-void    execute_single_command(t_command *cmd, t_mini *mini, int input_fd, int output_fd);
-char    *find_command_path(char *cmd, char **env);  // Rimuovi const
+void	execute_single_command(t_command *cmd, t_mini *mini, int input_fd, int output_fd);
+char	*find_command_path(char *cmd, char **env);  // Rimuovi const
 
 #endif
