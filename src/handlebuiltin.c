@@ -185,6 +185,6 @@ void builtinexe(t_token *token, t_mini *mini)
     {
        export(mini->envp->env, token->next->value);
     }
-// 	if(b == 6)
-// 	    unset(token->next->value);
+ 	if(b == 6)
+ 	    unset(mini, token->next->value);
 }

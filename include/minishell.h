@@ -166,7 +166,6 @@ void	ctrlc(int sig);
 char	*ft_substr(const char *s, unsigned int start, size_t len);
 int		is_valid_token_sequence(t_token *tokens);
 void	printmatrix(char **matrix);
-char	 *ft_pwd(char **env);
 
 //per i comandi
 
@@ -181,7 +180,7 @@ void handle_command_redirection(t_command *cmd, t_token *curr);
 /* Command execution functions */
 
 /* Builtin commands */
-void     ft_pwd(char **env);
+char	 *ft_pwd(char **env);
 
 /* Utils functions */
 char    **ft_split(const char *s, char c);
