@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
+#include <stdarg.h>
 # include <readline/readline.h>    /* Per readline() */
 # include <readline/history.h>     /* Per add_history() */
 # include <signal.h>
@@ -34,7 +35,8 @@
 # define BLUE "\001\033[1;34m\002"
 # define INDIGO "\001\033[38;5;93m\002"
 # define VIOLET "\001\033[1;35m\002"
-# define RESET "\001\033[0m\002"
+# define SLAY "\e[45m"
+# define RESET "\e[0m"
 
 # define EXIT_MSG RED "❤ " ORANGE "❤ " YELLOW "👋 " \
     RED "T" ORANGE "h" YELLOW "a" GREEN "n" BLUE "k" INDIGO "s " \
@@ -104,6 +106,7 @@ typedef struct s_env
 typedef struct s_mini
 {
 	t_env	*envp;
+	char 	*tmppwd;
 
 }		t_mini;
 
@@ -125,6 +128,7 @@ char	**export(char **env, const char *new_var);
 char	**copyenv(char **envp);
 void	free_env(char **env);
 char	*get_env_value(char **env, const char *name);
+void unset(t_mini *mini, const char *var_name);
 
 /* Lexer functions */
 t_token	*lexer(t_mini *mini, const char *input);
@@ -141,7 +145,7 @@ char	*handle_double_quotes(t_mini *mini, const char *input, size_t *i);
 void	handle_redirection(t_token **tokens, const char *input, size_t *i, char type);
 int		handleword(t_token *token, t_mini *mini);
 int		builtin(char *line);
-void	builtinexe(t_token *token, char **envp);
+void	builtinexe(t_token *token, t_mini *mini);
 void	process_tokens(t_token *token, t_mini *mini);
 
 
@@ -162,6 +166,7 @@ void	ctrlc(int sig);
 char	*ft_substr(const char *s, unsigned int start, size_t len);
 int		is_valid_token_sequence(t_token *tokens);
 void	printmatrix(char **matrix);
+char	 *ft_pwd(char **env);
 
 //per i comandi
 

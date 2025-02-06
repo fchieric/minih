@@ -14,13 +14,22 @@
 
 int	g_whatsup = 0;
 
-static char	*get_rainbow_prompt(void)
+static char	*get_rainbow_prompt(t_mini *mini)
 {
 	char	*prompt;
+	char 	*pivud;
+	char	*endprompt;
 
-	prompt = ft_strdup(RED "m" ORANGE "i" YELLOW "n" GREEN "i"
+	prompt = ft_strdup("🐚" " "RED "m" ORANGE "i" YELLOW "n" GREEN "i"
 		BLUE "s" INDIGO "h" VIOLET "e" RED "l" ORANGE "l"
-		INDIGO "> " RESET);
+		INDIGO ": " "🌈 "RESET);
+	pivud= ft_strdup((const char*)ft_pwd(mini->envp->env));
+	pivud = ft_strjoin(SLAY, pivud);
+	endprompt = ft_strdup(RESET" ""🌈"" " INDIGO "> " RESET);
+	prompt = ft_strjoin(prompt, pivud);
+	prompt = ft_strjoin(prompt, endprompt);
+	free(pivud);
+	free(endprompt);
 	return (prompt);
 }
 static void	test_lexer(t_mini *mini)
@@ -29,9 +38,9 @@ static void	test_lexer(t_mini *mini)
 	t_token	*tokens;
 	char	*rainbow;
 
-	rainbow = get_rainbow_prompt();
 	while (1)
 	{
+	rainbow = get_rainbow_prompt(mini);
 		input = readline(rainbow);
 		if (!input)
 		{
@@ -43,7 +52,10 @@ static void	test_lexer(t_mini *mini)
 			add_history(input);
 			tokens = lexer(mini, input);
 			if (ft_strcmp("exit", tokens->value) == 0)
+			{
+				printf(EXIT_MSG);
 				break ; //dobbiamo fare ft_exit dove facciamo free
+			}
 			if (tokens)
 			{
 				process_tokens(tokens, mini);
