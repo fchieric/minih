@@ -14,7 +14,7 @@
 
 int handleword(t_token *token, t_mini *mini);
 int		builtin(char *line);
-void	builtinexe(t_token *token, char **envp);
+void builtinexe(t_token *token, t_mini *mini);
 
 int handleword(t_token *token, t_mini *mini)
 {
@@ -22,7 +22,7 @@ int handleword(t_token *token, t_mini *mini)
 
 	b = builtin(token->value);
 	if (b != -1)
-		builtinexe(token, mini->envp->env);
+		builtinexe(token, mini);
 	return (0);
 }
 int		builtin(char *line)
@@ -42,37 +42,34 @@ int		builtin(char *line)
 	return (-1);
 }
 
-void ft_pwd(char **env) {
-    int i = 0;
-    while (env[i] != NULL) {  // Itera finché non raggiungi la fine della matrice
-        if (strncmp(env[i], "PWD=", 4) == 0) {  // Cerca la stringa che inizia con "PWD="
-            printf("%s\n", env[i] + 4);  // Stampa il valore dopo "PWD="
-            return;
-        }
-        i++;
-    }
-    printf("PWD not found in environment.\n");  // Se non trovi PWD
-}
-
-void builtinexe(t_token *token, char **envp)
+void builtinexe(t_token *token, t_mini *mini)
 {
 	int b;
-	char **env;
+	char *tmp;
 
 	b = builtin(token->value);
-	env = copyenv(envp);
-
-	// if(b = 1)
-	// 	fecho
-	// if(b = 2)
-	// 	ft_cd
-	if(b == 3)
-		ft_pwd(env) ;
-	if(b == 4)
-	 	 printmatrix(env);
-	//if(b = 5)
-		//env = export(env, token);
-	// if(b = 6)
-	// 	env = unset_env(env, "-----------------")
-	// free_env(env);
+	if(b == 1)
+	{
+		if(token->next)
+			tmp = token->next->value;
+		if (ft_strcmp(tmp, "-n") == 0)
+			ft_echon(token);
+		else
+		ft_echo(token);
+	}
+	else if(b == 2)
+	 	ft_cd(token, mini);
+	else if(b == 3)
+	{
+		tmp = ft_pwd(mini->envp->env) ;
+		printf("%s\n", tmp);
+	}
+	else if(b == 4)
+	 	 printmatrix(mini->envp->env);
+	else if (b == 5)
+    {
+       export(mini->envp->env, token->next->value);
+    }
+ 	if(b == 6)
+ 	    unset(mini, token->next->value);
 }

@@ -12,69 +12,88 @@
 
 #include "minishell.h"
 
-char **export(char **env, const char *new_var);
 char **copyenv(char **envp);
 void free_env(char **env);
 
-char **copyenv(char **envp) { //ringraziare chattone che come lui nessuno
-    int count = 0;
+char	**copyenv(char **envp)
+{
+	int		count;
+	char	**env;
+	int		i;
 
-    // Conta le variabili nell'env originale
-    while (envp[count])
-        count++;
-
-    // Alloca spazio per la copia
-    char **env = malloc(sizeof(char *) * (count + 1));
-    if (!env)
-        return NULL;
-
-    // Copia ogni stringa
-    for (int i = 0; i < count; i++) {
-        env[i] = ft_strdup(envp[i]);
-        if (!env[i]) {
-            // Libera la memoria in caso di errore
-            while (i > 0)
-                free(env[--i]);
-            free(env);
-            return NULL;
-        }
-    }
-    env[count] = NULL; // Termina con NULL
-    return env;
+	count = 0;
+	while (envp[count])
+		count++;
+	env = (char **)malloc(sizeof(char *) * (count + 1));
+	if (!env)
+		return (NULL);
+	i = 0;
+	while (i < count)
+	{
+		env[i] = ft_strdup(envp[i]);
+		if (!env[i])
+		{
+			while (i > 0)
+				free(env[--i]);
+			free(env);
+			return (NULL);
+		}
+		i++;
+	}
+	env[count] = NULL;
+	return (env);
 }
 
-void free_env(char **env) {
-    if (!env)
-        return;
-    for (int i = 0; env[i]; i++)
-        free(env[i]);
-    free(env);
+void free_env(char **env)
+{
+	int i = 0;
+
+	if (!env)
+		return;
+
+	while (env[i])
+	{
+		free(env[i]);
+		i++;
+	}
+	free(env);
 }
 
-char **export(char **env, const char *new_var) {
+// Function to get an environment variable
+char *ft_getenv(char **envp, const char *name)
+{
     int i = 0;
-    int name_len = strchr(new_var, '=') - new_var + 1;
+    size_t len = strlen(name);
 
-    while (env[i]) {
-        // Cerca una variabile con lo stesso nome
-        if (strncmp(env[i], new_var, name_len - 1) == 0 && env[i][name_len - 1] == '=') {
-            free(env[i]); // Libera la vecchia variabile
-            env[i] = strdup(new_var); // Assegna la nuova
-            return (env);
+    while (envp[i])
+    {
+        if (strncmp(envp[i], name, len) == 0 && envp[i][len] == '=')
+            return envp[i] + len + 1;
+        i++;
+    }
+    return NULL;
+}
+
+// Function to update the environment variable
+void ft_setenv(char **envp, const char *name, const char *value)
+{
+    int i = 0;
+    size_t len = strlen(name);
+    char *new_value;
+
+    new_value = malloc(strlen(name) + strlen(value) + 2);
+    if (!new_value)
+        return;
+    sprintf(new_value, "%s=%s", name, value);
+
+    while (envp[i])
+    {
+        if (strncmp(envp[i], name, len) == 0 && envp[i][len] == '=')
+        {
+            free(envp[i]);
+            envp[i] = new_value;
+            return;
         }
         i++;
     }
-
-    // Aggiungi una nuova variabile
-    char **nenv = realloc(env, sizeof(char *) * (i + 2));
-    if (!nenv)
-        return NULL;
-
-    nenv[i] = strdup(new_var);
-    if (!nenv[i]) {
-        free(nenv);
-        return NULL;
-    }
-    nenv[i + 1] = NULL;
-    return nenv;
 }

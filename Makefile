@@ -5,7 +5,7 @@ SRC_DIR = src/
 INC_DIR = include/
 
 # Source files with path
-SRC = $(addprefix $(SRC_DIR), env.c ft_matrix.c ft_str_utils.c ft_strings.c inizializer.c lexer_envar.c lexer.c lexerquotes.c lexerutils.c mainmini.c safefunct.c tokens.c signals.c tokenhandler.c handlebuiltin.c redirs.c parser.c command_utils.c pipe_executor.c heredoc.c)
+SRC = $(addprefix $(SRC_DIR), env.c ft_matrix.c ft_str_utils.c ft_strings.c inizializer.c lexer_envar.c lexer.c lexerquotes.c lexerutils.c mainmini.c safefunct.c tokens.c signals.c tokenhandler.c bi_handlebi.c redirs.c parser.c command_utils.c pipe_executor.c heredoc.c bi_export.c bi_pwd_cd.c bi_unset.c bi_echo.c )
 OBJ = $(SRC:.c=.o)
 
 # Compiler and flags
