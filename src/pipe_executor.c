@@ -6,24 +6,11 @@
 /*   By: fabi <fabi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 18:34:42 by fabi              #+#    #+#             */
-/*   Updated: 2025/02/03 23:48:09 by fabi             ###   ########.fr       */
+/*   Updated: 2025/02/10 16:25:32 by fabi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static int count_commands(t_command *cmd)
-{
-    int count;
-    
-    count = 0;
-    while (cmd)
-    {
-        count++;
-        cmd = cmd->next;
-    }
-    return (count);
-}
 
 char *find_command_path(char *cmd, char **envp)
 {
@@ -118,36 +105,4 @@ void execute_single_command(t_command *cmd, t_mini *mini, int input_fd, int outp
         free(path);
         exit(127);
     }
-}
-
-static void handle_child_process(t_command *cmd, t_mini *mini, 
-                               t_pipe_state *state, int cmd_index)
-{
-    // Gestione dell'input
-    if (cmd_index == 0)  // Primo comando
-    {
-        if (cmd->infile || cmd->heredoc)
-            ; // L'input verrà gestito in execute_single_command
-        else if (state->pipe_count > 0)
-            dup2(state->pipe_fds[1], STDOUT_FILENO);
-    }
-    else if (cmd_index == state->cmd_count - 1)  // Ultimo comando
-    {
-        if (!cmd->outfile && !cmd->append)
-            dup2(state->pipe_fds[(cmd_index - 1) * 2], STDIN_FILENO);
-    }
-    else  // Comandi intermedi
-    {
-        dup2(state->pipe_fds[(cmd_index - 1) * 2], STDIN_FILENO);
-        dup2(state->pipe_fds[cmd_index * 2 + 1], STDOUT_FILENO);
-    }
-
-    // Chiude tutti i file descriptor delle pipe nel processo figlio
-    for (int i = 0; i < state->pipe_count * 2; i++)
-        if (state->pipe_fds[i] > 2)
-            close(state->pipe_fds[i]);
-
-    // Esegue il comando con le eventuali redirezioni
-    execute_single_command(cmd, mini, STDIN_FILENO, STDOUT_FILENO);
-    exit(mini->envp->exit_status);
 }
