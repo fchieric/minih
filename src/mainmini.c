@@ -32,39 +32,47 @@ static char	*get_rainbow_prompt(t_mini *mini)
 	free(endprompt);
 	return (prompt);
 }
-static void	test_lexer(t_mini *mini)
+static void    handle_input(t_mini *mini, char *input)
 {
-	char	*input;
-	t_token	*tokens;
-	char	*rainbow;
+    t_token *tokens;
 
-	while (1)
-	{
-	rainbow = get_rainbow_prompt(mini);
-		input = readline(rainbow);
-		if (!input)
-		{
-			printf(EXIT_MSG);
-			break ;
-		}
-		if (*input)
-		{
-			add_history(input);
-			tokens = lexer(mini, input);
-			if (ft_strcmp("exit", tokens->value) == 0)
-			{
-				printf(EXIT_MSG);
-				break ; //dobbiamo fare ft_exit dove facciamo free
-			}
-			if (tokens)
-			{
-				process_tokens(tokens, mini);
-				print_tokens(tokens);
-				free_tokens(tokens);
-			}
-		}
-		free(input);
-	}
+    if (*input)
+    {
+        add_history(input);
+        tokens = lexer(mini, input);
+        if (tokens)
+        {
+            if (ft_strcmp("exit", tokens->value) == 0)
+            {
+                printf(EXIT_MSG);
+                free_tokens(tokens);
+                free(input);
+                exit(0);
+            }
+            process_tokens(tokens, mini);
+            free_tokens(tokens);
+        }
+    }
+    free(input);
+}
+
+static void    shell_loop(t_mini *mini)
+{
+    char    *input;
+    char    *prompt;
+
+    while (1)
+    {
+        prompt = get_rainbow_prompt(mini);
+        input = readline(prompt);
+        free(prompt);
+        if (!input)
+        {
+            printf(EXIT_MSG);
+            break ;
+        }
+        handle_input(mini, input);
+    }
 }
 
 int	main(int ac, char **av, char **env)
@@ -75,8 +83,8 @@ int	main(int ac, char **av, char **env)
 
 	signal(SIGINT, ctrlc);  // Ctrl+C
 	signal(SIGQUIT, SIG_IGN); // Ctrl+\ (ignorato)
-	inizializer(&mini, env);
-	test_lexer(&mini);
+	init_shell(&mini, env);
+	shell_loop(&mini);
 	free_env(mini.envp->env);
 	free_env(mini.envp->exportenv);
 	free(mini.envp);

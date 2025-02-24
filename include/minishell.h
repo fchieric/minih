@@ -120,7 +120,7 @@ typedef struct s_pipe_state {
 } t_pipe_state;
 
 /* Initialization */
-void	inizializer(t_mini *mini, char **env);
+void	init_shell(t_mini *mini, char **env);
 void	*safe_malloc(size_t size);
 
 /* Environment functions */
