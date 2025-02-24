@@ -67,37 +67,61 @@ int	is_special_char(char c)
 	return (c == '|' || c == '>' || c == '<');
 }
 
-int is_valid_token_sequence(t_token *tokens)
+static int	is_valid_pipe_sequence(t_token *current)
 {
-    t_token *current;
-    
-    current = tokens;
-    while (current && current->next)
-    {
-        // Controlla pipe consecutivi
-        if (current->type == TOKEN_PIPE && current->next->type == TOKEN_PIPE)
-        {
-            ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
-            return (0);
-        }
-        // Controlla redirezioni consecutive dello stesso tipo
-        if ((current->type == TOKEN_REDIR_IN && current->next->type == TOKEN_REDIR_IN) ||
-            (current->type == TOKEN_REDIR_OUT && current->next->type == TOKEN_REDIR_OUT) ||
-            (current->type == TOKEN_HEREDOC && current->next->type == TOKEN_HEREDOC) ||
-            (current->type == TOKEN_APPEND && current->next->type == TOKEN_APPEND))
-        {
-            ft_putendl_fd("minishell: syntax error near unexpected token", 2);
-            return (0);
-        }
-        // Controlla che dopo una redirezione ci sia un nome di file
-        if ((current->type == TOKEN_REDIR_IN || current->type == TOKEN_REDIR_OUT ||
-             current->type == TOKEN_HEREDOC || current->type == TOKEN_APPEND) &&
-            (current->next->type != TOKEN_WORD && current->next->type != TOKEN_TEXT))
-        {
-            ft_putendl_fd("minishell: syntax error near unexpected token", 2);
-            return (0);
-        }
-        current = current->next;
-    }
-    return (1);
+	if (current->type == TOKEN_PIPE && current->next->type == TOKEN_PIPE)
+	{
+		ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
+		return (0);
+	}
+	return (1);
+}
+
+static int	is_valid_redirection_type(t_token *current)
+{
+	if ((current->type == TOKEN_REDIR_IN 
+			&& current->next->type == TOKEN_REDIR_IN)
+		|| (current->type == TOKEN_REDIR_OUT 
+			&& current->next->type == TOKEN_REDIR_OUT)
+		|| (current->type == TOKEN_HEREDOC 
+			&& current->next->type == TOKEN_HEREDOC)
+		|| (current->type == TOKEN_APPEND 
+			&& current->next->type == TOKEN_APPEND))
+	{
+		ft_putendl_fd("minishell: syntax error near unexpected token", 2);
+		return (0);
+	}
+	return (1);
+}
+
+static int	is_valid_redirection_target(t_token *current)
+{
+	if ((current->type == TOKEN_REDIR_IN || current->type == TOKEN_REDIR_OUT
+			|| current->type == TOKEN_HEREDOC 
+			|| current->type == TOKEN_APPEND)
+		&& (current->next->type != TOKEN_WORD 
+			&& current->next->type != TOKEN_TEXT))
+	{
+		ft_putendl_fd("minishell: syntax error near unexpected token", 2);
+		return (0);
+	}
+	return (1);
+}
+
+int	is_valid_token_sequence(t_token *tokens)
+{
+	t_token	*current;
+
+	current = tokens;
+	while (current && current->next)
+	{
+		if (!is_valid_pipe_sequence(current))
+			return (0);
+		if (!is_valid_redirection_type(current))
+			return (0);
+		if (!is_valid_redirection_target(current))
+			return (0);
+		current = current->next;
+	}
+	return (1);
 }

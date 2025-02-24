@@ -13,7 +13,7 @@
 #include "minishell.h"
 
 char	**export(char **env, const char *new_var);
-static void	print_env(char **env);
+static void	printdeclare(char **env);
 static int	update_existing_var(char **env, const char *new_var, int name_len);
 
 static void	printdeclare(char **env)

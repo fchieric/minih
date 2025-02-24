@@ -12,12 +12,12 @@
 
 #include "minishell.h"
 
-void inizializer(t_mini *mini, char **env);
+void	init_shell(t_mini *mini, char **env);
 
-void inizializer(t_mini *mini, char **env)
+void	init_shell(t_mini *mini, char **env)
 {
-	mini->envp = safe_malloc(sizeof(t_env));
-	mini->envp->env = copyenv(env);
-	mini->envp->exportenv = copyenv(env);
-	mini->envp->exit_status = 0;
+    mini->envp = safe_malloc(sizeof(t_env));
+    mini->envp->env = copyenv(env);
+    mini->envp->exportenv = copyenv(env);
+    mini->envp->exit_status = 0;
 }

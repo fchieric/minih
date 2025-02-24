@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_executor.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fabi <fabi@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 18:34:42 by fabi              #+#    #+#             */
-/*   Updated: 2025/02/10 16:25:32 by fabi             ###   ########.fr       */
+/*   Updated: 2025/02/24 16:17:19 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,62 +47,97 @@ char *find_command_path(char *cmd, char **envp)
     return (NULL);
 }
 
-void execute_single_command(t_command *cmd, t_mini *mini, int input_fd, int output_fd)
+static void    handle_builtin_redirects(int input_fd, int output_fd, 
+    int *saved_fds)
 {
-    char *path;
+    if (input_fd != STDIN_FILENO || output_fd != STDOUT_FILENO)
+    {
+        saved_fds[0] = dup(STDIN_FILENO);
+        saved_fds[1] = dup(STDOUT_FILENO);
+        if (input_fd != STDIN_FILENO)
+            dup2(input_fd, STDIN_FILENO);
+        if (output_fd != STDOUT_FILENO)
+            dup2(output_fd, STDOUT_FILENO);
+    }
+}
 
+static void    restore_fds(int *saved_fds)
+{
+    if (saved_fds[0] != -1)
+    {
+        dup2(saved_fds[0], STDIN_FILENO);
+        close(saved_fds[0]);
+    }
+    if (saved_fds[1] != -1)
+    {
+        dup2(saved_fds[1], STDOUT_FILENO);
+        close(saved_fds[1]);
+    }
+}
+
+void execute_single_command(t_command *cmd, t_mini *mini, 
+    int input_fd, int output_fd)
+{
+    char    *path;
+    int     saved_fds[2];
+    t_token *token;
+
+    saved_fds[0] = -1;
+    saved_fds[1] = -1;
     if (cmd->type == CMD_BUILTIN)
     {
-        // Gestisce builtin con redirezioni
-        int saved_stdin = -1;
-        int saved_stdout = -1;
-
-        if (input_fd != STDIN_FILENO || output_fd != STDOUT_FILENO || 
-            cmd->infile || cmd->outfile || cmd->append || cmd->heredoc)
-        {
-            saved_stdin = dup(STDIN_FILENO);
-            saved_stdout = dup(STDOUT_FILENO);
-        }
-
-        // Gestione dell'input
-        if (input_fd != STDIN_FILENO)
-            dup2(input_fd, STDIN_FILENO);
-        if (output_fd != STDOUT_FILENO)
-            dup2(output_fd, STDOUT_FILENO);
-
-        // Esegue il builtin
-        //handle_builtin(cmd, mini);
-
-        // Ripristina i file descriptors
-        if (saved_stdin != -1)
-        {
-            dup2(saved_stdin, STDIN_FILENO);
-            close(saved_stdin);
-        }
-        if (saved_stdout != -1)
-        {
-            dup2(saved_stdout, STDOUT_FILENO);
-            close(saved_stdout);
-        }
-    }
-    else
-    {
-        path = find_command_path(cmd->name, mini->envp->env);
-        if (!path)
-        {
-            ft_putstr_fd("minishell: command not found: ", 2);
-            ft_putendl_fd(cmd->name, 2);
-            mini->envp->exit_status = 127;
+        handle_builtin_redirects(input_fd, output_fd, saved_fds);
+        
+        // Create a token for handleword using cmd's name
+        token = safe_malloc(sizeof(t_token));
+        if (!token)
             return;
+        
+        token->type = TOKEN_WORD;
+        token->value = ft_strdup(cmd->name);
+        
+        // Create a linked list of tokens for arguments if needed
+        t_token *last = token;
+        for (int i = 1; cmd->args[i] != NULL; i++)
+        {
+            t_token *arg_token = safe_malloc(sizeof(t_token));
+            if (!arg_token)
+                break;
+            
+            arg_token->type = TOKEN_WORD;
+            arg_token->value = ft_strdup(cmd->args[i]);
+            arg_token->next = NULL;
+            
+            last->next = arg_token;
+            last = arg_token;
         }
-
-        if (input_fd != STDIN_FILENO)
-            dup2(input_fd, STDIN_FILENO);
-        if (output_fd != STDOUT_FILENO)
-            dup2(output_fd, STDOUT_FILENO);
-
-        execve(path, cmd->args, mini->envp->env);
-        free(path);
-        exit(127);
+        
+        // Call handleword with the token
+        handleword(token, mini);
+        
+        // Free the tokens
+        free_tokens(token);
+        
+        restore_fds(saved_fds);
+        return;
     }
+    
+    // For external commands, keep the original code
+    path = find_command_path(cmd->name, mini->envp->env);
+    if (!path)
+    {
+        ft_putstr_fd("minishell: command not found: ", 2);
+        ft_putendl_fd(cmd->name, 2);
+        mini->envp->exit_status = 127;
+        return;
+    }
+    
+    if (input_fd != STDIN_FILENO)
+        dup2(input_fd, STDIN_FILENO);
+    if (output_fd != STDOUT_FILENO)
+        dup2(output_fd, STDOUT_FILENO);
+    
+    execve(path, cmd->args, mini->envp->env);
+    free(path);
+    exit(127);
 }
