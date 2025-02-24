@@ -16,16 +16,18 @@ int handleword(t_token *token, t_mini *mini);
 int		builtin(char *line);
 void builtinexe(t_token *token, t_mini *mini);
 
-int handleword(t_token *token, t_mini *mini)
+int	handleword(t_token *token, t_mini *mini)
 {
-	int b;
+	int	b;
 
+	debug_fd("In handleword");
 	b = builtin(token->value);
 	if (b != -1)
 		builtinexe(token, mini);
 	return (0);
 }
-int		builtin(char *line)
+
+int	builtin(char *line)
 {
 	if (ft_strcmp(line, "echo") == 0)
 		return (1);
@@ -42,34 +44,45 @@ int		builtin(char *line)
 	return (-1);
 }
 
-void builtinexe(t_token *token, t_mini *mini)
+void	builtinexe(t_token *token, t_mini *mini)
 {
-	int b;
-	char *tmp;
+	int		b;
+	char	*tmp;
 
+	debug_fd("In builtinexe");
 	b = builtin(token->value);
-	if(b == 1)
+	if (b == 1)
 	{
-		if(token->next)
+		if (token->next)
 			tmp = token->next->value;
-		if (ft_strcmp(tmp, "-n") == 0)
+		else
+			tmp = NULL;
+		
+		if (tmp && ft_strcmp(tmp, "-n") == 0)
 			ft_echon(token);
 		else
-		ft_echo(token);
+			ft_echo(token);
 	}
-	else if(b == 2)
-	 	ft_cd(token, mini);
-	else if(b == 3)
+	else if (b == 2)
+		ft_cd(token, mini);
+	else if (b == 3)
 	{
-		tmp = ft_pwd(mini->envp->env) ;
-		printf("%s\n", tmp);
+		tmp = ft_pwd(mini->envp->env);
+		write(STDOUT_FILENO, tmp, ft_strlen(tmp));
+		write(STDOUT_FILENO, "\n", 1);
 	}
-	else if(b == 4)
-	 	 printmatrix(mini->envp->env);
+	else if (b == 4)
+		printmatrix(mini->envp->env);
 	else if (b == 5)
-    {
-       export(mini->envp->env, token->next->value);
-    }
- 	if(b == 6)
- 	    unset(mini, token->next->value);
+	{
+		if (token->next && token->next->value)
+			mini->envp->env = export(mini->envp->env, token->next->value);
+		else
+			printmatrix(mini->envp->exportenv);
+	}
+	else if (b == 6)
+	{
+		if (token->next && token->next->value)
+			unset(mini, token->next->value);
+	}
 }

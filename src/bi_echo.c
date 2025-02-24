@@ -18,28 +18,48 @@ void	ft_echon(t_token *token);
 void	ft_echo(t_token *token)
 {
 	t_token	*temp;
+	int		first;
 
+	debug_fd("In ft_echo");
 	temp = token->next;
+	first = 1;
+	
+	if (!temp)
+	{
+		write(STDOUT_FILENO, "\n", 1);
+		return ;
+	}
+	
 	while (temp)
 	{
-		printf("%s", temp->value);
-		if (temp->next)
-			printf(" ");
+		if (!first)
+			write(STDOUT_FILENO, " ", 1);
+		write(STDOUT_FILENO, temp->value, ft_strlen(temp->value));
+		first = 0;
 		temp = temp->next;
 	}
-	printf("\n");
+	write(STDOUT_FILENO, "\n", 1);
 }
 
 void	ft_echon(t_token *token)
 {
 	t_token	*temp;
+	int		first;
 
+	debug_fd("In ft_echon");
 	temp = token->next;
+	if (!temp) // Skip il flag -n
+		return ;
+	temp = temp->next; // Passa al primo argomento dopo -n
+	first = 1;
+	
 	while (temp)
 	{
-		printf("%s", temp->value);
-		if (temp->next)
-			printf(" ");
+		if (!first)
+			write(STDOUT_FILENO, " ", 1);
+		write(STDOUT_FILENO, temp->value, ft_strlen(temp->value));
+		first = 0;
 		temp = temp->next;
 	}
+	// Non stampa la nuova riga
 }

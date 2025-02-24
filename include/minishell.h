@@ -214,5 +214,7 @@ char	*find_command_path(char *cmd, char **env);  // Rimuovi const
 void	setup_heredoc(t_command *cmd);
 void	execute_commands_with_pipes(t_command *cmd, t_mini *mini);
 void	setup_redirections(t_command *cmd);
+/* Funzioni di debug */
+void	debug_fd(const char *message);
 
 #endif
