@@ -17,72 +17,73 @@ int	g_whatsup = 0;
 static char	*get_rainbow_prompt(t_mini *mini)
 {
 	char	*prompt;
-	char 	*pivud;
-	char	*endprompt;
+	char	*pwd_path;
+	char	*end_prompt;
 
 	prompt = ft_strdup("🐚" " "RED "m" ORANGE "i" YELLOW "n" GREEN "i"
 		BLUE "s" INDIGO "h" VIOLET "e" RED "l" ORANGE "l"
 		INDIGO ": " "🌈 "RESET);
-	pivud= ft_strdup((const char*)ft_pwd(mini->envp->env));
-	pivud = ft_strjoin(SLAY, pivud);
-	endprompt = ft_strdup(RESET" ""🌈"" " INDIGO "> " RESET);
-	prompt = ft_strjoin(prompt, pivud);
-	prompt = ft_strjoin(prompt, endprompt);
-	free(pivud);
-	free(endprompt);
+	pwd_path = ft_strdup((const char *)ft_pwd(mini->envp->env));
+	pwd_path = ft_strjoin(SLAY, pwd_path);
+	end_prompt = ft_strdup(RESET" ""🌈"" " INDIGO "> " RESET);
+	prompt = ft_strjoin(prompt, pwd_path);
+	prompt = ft_strjoin(prompt, end_prompt);
+	free(pwd_path);
+	free(end_prompt);
 	return (prompt);
 }
-static void    handle_input(t_mini *mini, char *input)
-{
-    t_token *tokens;
 
-    if (*input)
-    {
-        add_history(input);
-        tokens = lexer(mini, input);
-        if (tokens)
-        {
-            if (ft_strcmp("exit", tokens->value) == 0)
-            {
-                printf(EXIT_MSG);
-                free_tokens(tokens);
-                free(input);
-                exit(0);
-            }
-            process_tokens(tokens, mini);
-            free_tokens(tokens);
-        }
-    }
-    free(input);
+static void	handle_input(t_mini *mini, char *input)
+{
+	t_token	*tokens;
+
+	if (!input || !*input)
+		return ;
+	add_history(input);
+	tokens = lexer(mini, input);
+	if (!tokens)
+		return ;
+	if (ft_strcmp("exit", tokens->value) == 0)
+	{
+		printf(EXIT_MSG);
+		free_tokens(tokens);
+		free(input);
+		free_env(mini->envp->env);
+		free_env(mini->envp->exportenv);
+		free(mini->envp);
+		exit(0);
+	}
+	process_tokens(tokens, mini);
+	free_tokens(tokens);
 }
 
-static void    shell_loop(t_mini *mini)
+static void	shell_loop(t_mini *mini)
 {
-    char    *input;
-    char    *prompt;
+	char	*input;
+	char	*prompt;
 
-    while (1)
-    {
-        prompt = get_rainbow_prompt(mini);
-        input = readline(prompt);
-        free(prompt);
-        if (!input)
-        {
-            printf(EXIT_MSG);
-            break ;
-        }
-        handle_input(mini, input);
-    }
+	while (1)
+	{
+		prompt = get_rainbow_prompt(mini);
+		input = readline(prompt);
+		free(prompt);
+		if (!input)
+		{
+			printf(EXIT_MSG);
+			break ;
+		}
+		handle_input(mini, input);
+		free(input);
+	}
 }
 
 int	main(int ac, char **av, char **env)
 {
 	t_mini	mini;
+
 	(void)ac;
 	(void)av;
-
-	signal(SIGINT, ctrlc);  // Ctrl+C
-	signal(SIGQUIT, SIG_IGN); // Ctrl+\ (ignorato)
+	setup_parent_signals();
 	init_shell(&mini, env);
 	shell_loop(&mini);
 	free_env(mini.envp->env);

@@ -211,7 +211,8 @@ void	terminate_child_processes(t_pipe_state *state, int sig);
 void	execute_single_command(t_command *cmd, t_mini *mini, int input_fd, int output_fd);
 char	*find_command_path(char *cmd, char **env);  // Rimuovi const
 // Nella sezione delle dichiarazioni delle funzioni, aggiungi:
+void	setup_heredoc(t_command *cmd);
 void	execute_commands_with_pipes(t_command *cmd, t_mini *mini);
-void setup_heredoc(t_command *cmd);
+void	setup_redirections(t_command *cmd);
 
 #endif

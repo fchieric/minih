@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: fmartusc <fmartusc@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/24 16:14:38 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/24 16:14:38 by marvin           ###   ########.fr       */
+/*   Created: 2025/02/24 16:14:38 by fmartusc          #+#    #+#             */
+/*   Updated: 2025/02/24 16:14:38 by fmartusc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,19 +72,12 @@ static void	setup_child_pipes(t_pipe_state *state, int cmd_index)
 	close_pipes(state);
 }
 
-static void	handle_child_process(t_command *cmd, t_mini *mini, t_pipe_state *state,
-	int cmd_index)
+static void	handle_child_process(t_command *cmd, t_mini *mini,
+	t_pipe_state *state, int cmd_index)
 {
 	setup_child_signals();
 	setup_child_pipes(state, cmd_index);
-	if (cmd->infile)
-		redirect_input(cmd->infile);
-	if (cmd->outfile)
-		redirect_output(cmd->outfile, 0);
-	if (cmd->append)
-		redirect_output(cmd->append, 1);
-	if (cmd->heredoc)
-		setup_heredoc(cmd);
+	setup_redirections(cmd);
 	execute_single_command(cmd, mini, STDIN_FILENO, STDOUT_FILENO);
 	exit(mini->envp->exit_status);
 }
@@ -109,7 +102,7 @@ void	execute_commands_with_pipes(t_command *cmd, t_mini *mini)
 {
 	t_pipe_state	state;
 	int				i;
-	pid_t			pid;
+	t_command		*current;
 
 	state.cmd_count = count_commands(cmd);
 	state.child_pids = malloc(sizeof(pid_t) * state.cmd_count);
@@ -117,16 +110,15 @@ void	execute_commands_with_pipes(t_command *cmd, t_mini *mini)
 		return ;
 	g_whatsup = 1;
 	i = 0;
-	while (cmd && i < state.cmd_count)
+	current = cmd;
+	while (current && i < state.cmd_count)
 	{
-		pid = fork();
-		if (pid < 0)
+		state.child_pids[i] = fork();
+		if (state.child_pids[i] < 0)
 			break ;
-		else if (pid == 0)
-			handle_child_process(cmd, mini, &state, i);
-		else
-			state.child_pids[i] = pid;
-		cmd = cmd->next;
+		else if (state.child_pids[i] == 0)
+			handle_child_process(current, mini, &state, i);
+		current = current->next;
 		i++;
 	}
 	close_pipes(&state);

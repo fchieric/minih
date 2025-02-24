@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: fabi <fabi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/03 18:34:42 by fabi              #+#    #+#             */
-/*   Updated: 2025/02/24 22:07:33 by fabi             ###   ########.fr       */
+/*   Created: 2025/02/03 18:34:42 by fmartusc          #+#    #+#             */
+/*   Updated: 2025/02/24 22:33:36 by fabi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,11 @@ char	*find_command_path(char *cmd, char **envp)
 {
 	char	**all_paths;
 	char	*path;
-	int		i;
 	char	*path_cmd;
+	int		i;
 
+	if (!cmd || !*cmd)
+		return (NULL);
 	if (cmd[0] == '/' || cmd[0] == '.')
 		return (ft_strdup(cmd));
 	i = 0;
@@ -33,7 +35,7 @@ char	*find_command_path(char *cmd, char **envp)
 		path = ft_strjoin(all_paths[i], "/");
 		path_cmd = ft_strjoin(path, cmd);
 		free(path);
-		if (access(path_cmd, F_OK) == 0)
+		if (access(path_cmd, F_OK | X_OK) == 0)
 		{
 			free_matrix(all_paths);
 			return (path_cmd);
@@ -45,13 +47,12 @@ char	*find_command_path(char *cmd, char **envp)
 	return (NULL);
 }
 
-static void	handle_builtin_redirects(int input_fd, int output_fd,
-	int *saved_fds)
+static void	handle_builtin_redirects(int input_fd, int output_fd, int *saved)
 {
 	if (input_fd != STDIN_FILENO || output_fd != STDOUT_FILENO)
 	{
-		saved_fds[0] = dup(STDIN_FILENO);
-		saved_fds[1] = dup(STDOUT_FILENO);
+		saved[0] = dup(STDIN_FILENO);
+		saved[1] = dup(STDOUT_FILENO);
 		if (input_fd != STDIN_FILENO)
 			dup2(input_fd, STDIN_FILENO);
 		if (output_fd != STDOUT_FILENO)
@@ -104,9 +105,9 @@ static t_token	*create_token_from_cmd(t_command *cmd)
 void	execute_single_command(t_command *cmd, t_mini *mini,
 	int input_fd, int output_fd)
 {
-	char	*path;
 	int		saved_fds[2];
 	t_token	*token;
+	char	*path;
 
 	saved_fds[0] = -1;
 	saved_fds[1] = -1;
