@@ -66,17 +66,46 @@ static void	close_pipes(t_pipe_state *state)
 static void	setup_child_pipes(t_pipe_state *state, int cmd_index)
 {
 	if (cmd_index > 0)
-	{
 		dup2(state->pipe_fds[(cmd_index - 1) * 2], STDIN_FILENO);
-	}
 	if (cmd_index < state->cmd_count - 1)
-	{
 		dup2(state->pipe_fds[cmd_index * 2 + 1], STDOUT_FILENO);
-	}
 	close_pipes(state);
 }
 
-static void	execute_commands_with_pipes(t_command *cmd, t_mini *mini)
+static void	handle_child_process(t_command *cmd, t_mini *mini, t_pipe_state *state,
+	int cmd_index)
+{
+	setup_child_signals();
+	setup_child_pipes(state, cmd_index);
+	if (cmd->infile)
+		redirect_input(cmd->infile);
+	if (cmd->outfile)
+		redirect_output(cmd->outfile, 0);
+	if (cmd->append)
+		redirect_output(cmd->append, 1);
+	if (cmd->heredoc)
+		setup_heredoc(cmd);
+	execute_single_command(cmd, mini, STDIN_FILENO, STDOUT_FILENO);
+	exit(mini->envp->exit_status);
+}
+
+static void	wait_for_children(t_pipe_state *state, t_mini *mini)
+{
+	int	i;
+	int	status;
+
+	i = 0;
+	while (i < state->cmd_count)
+	{
+		waitpid(state->child_pids[i], &status, 0);
+		if (WIFEXITED(status))
+			mini->envp->exit_status = WEXITSTATUS(status);
+		i++;
+	}
+	g_whatsup = 0;
+}
+
+void	execute_commands_with_pipes(t_command *cmd, t_mini *mini)
 {
 	t_pipe_state	state;
 	int				i;
@@ -92,58 +121,16 @@ static void	execute_commands_with_pipes(t_command *cmd, t_mini *mini)
 	{
 		pid = fork();
 		if (pid < 0)
-		{
-			perror("fork");
 			break ;
-		}
 		else if (pid == 0)
-		{
-			setup_child_signals();
-			setup_child_pipes(&state, i);
-			execute_single_command(cmd, mini, STDIN_FILENO, STDOUT_FILENO);
-			exit(mini->envp->exit_status);
-		}
+			handle_child_process(cmd, mini, &state, i);
 		else
-		{
 			state.child_pids[i] = pid;
-		}
 		cmd = cmd->next;
 		i++;
 	}
 	close_pipes(&state);
-	i = 0;
-	while (i < state.cmd_count)
-	{
-		waitpid(state.child_pids[i], &mini->envp->exit_status, 0);
-		if (WIFEXITED(mini->envp->exit_status))
-			mini->envp->exit_status = WEXITSTATUS(mini->envp->exit_status);
-		i++;
-	}
-	g_whatsup = 0;
+	wait_for_children(&state, mini);
 	free(state.pipe_fds);
 	free(state.child_pids);
-}
-
-void	execute_commands(t_command *cmd, t_mini *mini)
-{
-	if (!cmd)
-		return ;
-	
-	if (!cmd->next && cmd->type == CMD_BUILTIN)
-	{
-		// For single builtin commands, no need to fork
-		if (cmd->infile)
-			setup_redirections(cmd);
-		handle_builtin(cmd, mini);
-	}
-	else if (!cmd->next)
-	{
-		// For single external commands
-		execute_external_command(cmd, mini);
-	}
-	else
-	{
-		// For piped commands
-		execute_commands_with_pipes(cmd, mini);
-	}
 }
