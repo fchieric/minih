@@ -22,33 +22,62 @@ void ft_cd(t_token *token, t_mini *mini)
 
     if (!old_pwd)
     {
-        perror("cd");
+        perror("cd: getcwd failed");
         return;
     }
+
+    // Se viene passato un argomento, lo usiamo come percorso
     if (token->next)
         path = token->next->value;
 
+    // Se nessun argomento o "~", andiamo nella HOME
     if (!path || strcmp(path, "~") == 0)
-        path = ft_getenv(mini->envp->env, "HOME");
-    else if (strcmp(path, "-") == 0)
-        path = ft_getenv(mini->envp->env, "OLDPWD");
-    if (!path)
     {
-        fprintf(stderr, "cd: No such file or directory\n");
+        path = ft_getenv(mini->envp->env, "HOME");
+        if (!path)
+        {
+            fprintf(stderr, "cd: HOME not set\n");
+            free(old_pwd);
+            return;
+        }
+    }
+    // Se "-", torniamo nella directory precedente
+    else if (strcmp(path, "-") == 0)
+    {
+        path = ft_getenv(mini->envp->env, "OLDPWD");
+        if (!path)
+        {
+            fprintf(stderr, "cd: OLDPWD not set\n");
+            free(old_pwd);
+            return;
+        }
+        printf("%s\n", path); // Stampa la directory quando si usa "cd -"
+    }
+
+    // Cambiamo la directory
+    if (chdir(path) != 0)
+    {
+        fprintf(stderr, "cd: %s: ", path);
+        perror("");
         free(old_pwd);
         return;
     }
-    if (chdir(path) != 0)
-        perror("cd");
-    else
-    {
-        ft_setenv(mini->envp->env, "OLDPWD", old_pwd);
-        char *new_pwd = getcwd(NULL, 0);
-        ft_setenv(mini->envp->env, "PWD", new_pwd);
-        free(new_pwd);
-    }
+
+    // Aggiorniamo OLDPWD e PWD
+    ft_setenv(&(mini->envp->env), "OLDPWD", old_pwd);
     free(old_pwd);
+
+    char *new_pwd = getcwd(NULL, 0);
+    if (!new_pwd)
+    {
+        perror("cd: getcwd failed");
+        return;
+    }
+
+    ft_setenv(&(mini->envp->env), "PWD", new_pwd);
+    free(new_pwd);
 }
+
 
 char *ft_pwd(char **env)
 {

@@ -15,48 +15,64 @@
 char **copyenv(char **envp);
 void free_env(char **env);
 
-char	**copyenv(char **envp)
+// Function to duplicate the environment
+char **copyenv(char **envp)
 {
-	int		count;
-	char	**env;
-	int		i;
+    int count = 0;
+    while (envp[count])
+        count++;
 
-	count = 0;
-	while (envp[count])
-		count++;
-	env = (char **)malloc(sizeof(char *) * (count + 1));
-	if (!env)
-		return (NULL);
-	i = 0;
-	while (i < count)
-	{
-		env[i] = ft_strdup(envp[i]);
-		if (!env[i])
-		{
-			while (i > 0)
-				free(env[--i]);
-			free(env);
-			return (NULL);
-		}
-		i++;
-	}
-	env[count] = NULL;
-	return (env);
+    char **env = (char **)malloc(sizeof(char *) * (count + 2)); // +1 for NULL, +1 for missing OLDPWD
+    if (!env)
+        return NULL;
+
+    int i = 0;
+    int oldpwd_found = 0;
+
+    while (i < count)
+    {
+        env[i] = strdup(envp[i]);
+        if (!env[i])
+        {
+            while (i > 0)
+                free(env[--i]);
+            free(env);
+            return NULL;
+        }
+        if (strncmp(env[i], "OLDPWD=", 7) == 0)
+            oldpwd_found = 1;
+        i++;
+    }
+
+    // Ensure OLDPWD exists
+    if (!oldpwd_found)
+    {
+        env[i] = strdup("OLDPWD=");
+        if (!env[i])
+        {
+            while (i > 0)
+                free(env[--i]);
+            free(env);
+            return NULL;
+        }
+        i++;
+    }
+
+    env[i] = NULL;
+    return env;
 }
 
+// Function to free environment
 void free_env(char **env)
 {
-	int i = 0;
+    int i = 0;
+    if (!env)
+        return;
 
-	if (!env)
-		return;
+    while (env[i])
+        free(env[i++]);
 
-	while (env[i])
-	{
-		free(env[i]);
-		i++;
-	}
-	free(env);
+    free(env);
 }
 
 // Function to get an environment variable
@@ -68,32 +84,44 @@ char *ft_getenv(char **envp, const char *name)
     while (envp[i])
     {
         if (strncmp(envp[i], name, len) == 0 && envp[i][len] == '=')
-            return envp[i] + len + 1;
+            return (envp[i] + len + 1);
         i++;
     }
     return NULL;
 }
 
-// Function to update the environment variable
-void ft_setenv(char **envp, const char *name, const char *value)
+// Function to update or add an environment variable
+void ft_setenv(char ***envp, const char *name, const char *value)
 {
     int i = 0;
     size_t len = strlen(name);
     char *new_value;
+    char **env = *envp;
 
     new_value = malloc(strlen(name) + strlen(value) + 2);
     if (!new_value)
         return;
     sprintf(new_value, "%s=%s", name, value);
 
-    while (envp[i])
+    while (env[i])
     {
-        if (strncmp(envp[i], name, len) == 0 && envp[i][len] == '=')
+        if (strncmp(env[i], name, len) == 0 && env[i][len] == '=')
         {
-            free(envp[i]);
-            envp[i] = new_value;
+            free(env[i]);
+            env[i] = new_value;
             return;
         }
         i++;
     }
+
+    // Add new variable if not found
+    char **new_env = realloc(env, sizeof(char *) * (i + 2));
+    if (!new_env)
+    {
+        free(new_value);
+        return;
+    }
+    new_env[i] = new_value;
+    new_env[i + 1] = NULL;
+    *envp = new_env;
 }

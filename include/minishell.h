@@ -127,7 +127,7 @@ void	*safe_malloc(size_t size);
 char	**copyenv(char **envp);
 void	free_env(char **env);
 char	*get_env_value(char **env, const char *name);
-void ft_setenv(char **envp, const char *name, const char *value);
+void ft_setenv(char ***envp, const char *name, const char *value);
 char *ft_getenv(char **envp, const char *name);
 
 /* Lexer functions */
