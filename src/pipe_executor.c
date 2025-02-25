@@ -6,7 +6,7 @@
 /*   By: fabi <fabi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 18:34:42 by fmartusc          #+#    #+#             */
-/*   Updated: 2025/02/24 23:41:14 by fabi             ###   ########.fr       */
+/*   Updated: 2025/02/25 00:47:10 by fabi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ char	*find_command_path(char *cmd, char **envp)
 
 static void	handle_builtin_redirects(int input_fd, int output_fd, int *saved)
 {
-	debug_fd("Before handle_builtin_redirects");
 	if (input_fd != STDIN_FILENO || output_fd != STDOUT_FILENO)
 	{
 		saved[0] = dup(STDIN_FILENO);
@@ -59,12 +58,10 @@ static void	handle_builtin_redirects(int input_fd, int output_fd, int *saved)
 		if (output_fd != STDOUT_FILENO)
 			dup2(output_fd, STDOUT_FILENO);
 	}
-	debug_fd("After handle_builtin_redirects");
 }
 
 static void	restore_fds(int *saved_fds)
 {
-	debug_fd("Before restore_fds");
 	if (saved_fds[0] != -1)
 	{
 		dup2(saved_fds[0], STDIN_FILENO);
@@ -75,10 +72,9 @@ static void	restore_fds(int *saved_fds)
 		dup2(saved_fds[1], STDOUT_FILENO);
 		close(saved_fds[1]);
 	}
-	debug_fd("After restore_fds");
 }
 
-static t_token	*create_token_from_cmd(t_command *cmd)
+t_token	*create_token_from_cmd(t_command *cmd)
 {
 	t_token	*token;
 	t_token	*last;
@@ -113,7 +109,6 @@ void	execute_single_command(t_command *cmd, t_mini *mini,
 	t_token	*token;
 	char	*path;
 
-	debug_fd("Before execute_single_command");
 	saved_fds[0] = -1;
 	saved_fds[1] = -1;
 	if (cmd->type == CMD_BUILTIN)
@@ -122,9 +117,7 @@ void	execute_single_command(t_command *cmd, t_mini *mini,
 		token = create_token_from_cmd(cmd);
 		if (token)
 		{
-			debug_fd("Before builtin in single command");
 			handleword(token, mini);
-			debug_fd("After builtin in single command");
 			free_tokens(token);
 		}
 		restore_fds(saved_fds);
@@ -145,5 +138,4 @@ void	execute_single_command(t_command *cmd, t_mini *mini,
 	execve(path, cmd->args, mini->envp->env);
 	free(path);
 	exit(127);
-	debug_fd("After execute_single_command");
 }

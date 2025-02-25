@@ -20,7 +20,6 @@ void	ft_echo(t_token *token)
 	t_token	*temp;
 	int		first;
 
-	debug_fd("In ft_echo");
 	temp = token->next;
 	first = 1;
 	
@@ -46,7 +45,6 @@ void	ft_echon(t_token *token)
 	t_token	*temp;
 	int		first;
 
-	debug_fd("In ft_echon");
 	temp = token->next;
 	if (!temp) // Skip il flag -n
 		return ;

@@ -20,7 +20,6 @@ int	handleword(t_token *token, t_mini *mini)
 {
 	int	b;
 
-	debug_fd("In handleword");
 	b = builtin(token->value);
 	if (b != -1)
 		builtinexe(token, mini);
@@ -49,7 +48,6 @@ void	builtinexe(t_token *token, t_mini *mini)
 	int		b;
 	char	*tmp;
 
-	debug_fd("In builtinexe");
 	b = builtin(token->value);
 	if (b == 1)
 	{

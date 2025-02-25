@@ -65,19 +65,16 @@ static void	close_pipes(t_pipe_state *state)
 
 static void	setup_child_pipes(t_pipe_state *state, int cmd_index)
 {
-	debug_fd("Before setup_child_pipes");
 	if (cmd_index > 0)
 		dup2(state->pipe_fds[(cmd_index - 1) * 2], STDIN_FILENO);
 	if (cmd_index < state->cmd_count - 1)
 		dup2(state->pipe_fds[cmd_index * 2 + 1], STDOUT_FILENO);
 	close_pipes(state);
-	debug_fd("After setup_child_pipes");
 }
 
 static void	handle_child_process(t_command *cmd, t_mini *mini,
 	t_pipe_state *state, int cmd_index)
 {
-	debug_fd("In child process");
 	setup_child_signals();
 	setup_child_pipes(state, cmd_index);
 	
@@ -114,10 +111,7 @@ static void	handle_child_process(t_command *cmd, t_mini *mini,
 			last->next = NULL;
 			i++;
 		}
-		
-		debug_fd("Before builtin in pipe");
 		handleword(token, mini);
-		debug_fd("After builtin in pipe");
 		
 		// Libera i token
 		free_tokens(token);
@@ -161,7 +155,6 @@ void	execute_commands_with_pipes(t_command *cmd, t_mini *mini)
 	int				i;
 	t_command		*current;
 
-	debug_fd("Before execute_commands_with_pipes");
 	state.cmd_count = count_commands(cmd);
 	state.child_pids = malloc(sizeof(pid_t) * state.cmd_count);
 	if (setup_pipes(&state) < 0 || !state.child_pids)
@@ -183,5 +176,4 @@ void	execute_commands_with_pipes(t_command *cmd, t_mini *mini)
 	wait_for_children(&state, mini);
 	free(state.pipe_fds);
 	free(state.child_pids);
-	debug_fd("After execute_commands_with_pipes");
 }

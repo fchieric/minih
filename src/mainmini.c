@@ -19,18 +19,42 @@ static char	*get_rainbow_prompt(t_mini *mini)
 	char	*prompt;
 	char	*pwd_path;
 	char	*end_prompt;
+	char	*shlvl_str;
+	int		shlvl;
+	char	*level_str;
 
-	prompt = ft_strdup("🐚" " "RED "m" ORANGE "i" YELLOW "n" GREEN "i"
+	shlvl_str = ft_getenv(mini->envp->env, "SHLVL");
+	if (shlvl_str)
+		shlvl = ft_atol(shlvl_str);
+	else
+		shlvl = 1;
+	if (shlvl > 1)
+	{
+		level_str = ft_itoa(shlvl); //da mettere ft
+		prompt = ft_strjoin(ORANGE"(", level_str);
+		free(level_str);
+		level_str = ft_strjoin(prompt, ") ");
+		free(prompt);
+		prompt = level_str;
+	}
+	else
+		prompt = ft_strdup("");
+	level_str = ft_strjoin(prompt, "🐚" " "RED "m" ORANGE "i" YELLOW "n" GREEN "i"
 		BLUE "s" INDIGO "h" VIOLET "e" RED "l" ORANGE "l"
 		INDIGO ": " "🌈 "RESET);
+	free(prompt);
+	prompt = level_str;
 	pwd_path = ft_strdup((const char *)ft_pwd(mini->envp->env));
 	pwd_path = ft_strjoin(SLAY, pwd_path);
 	end_prompt = ft_strdup(RESET" ""🌈"" " INDIGO "> " RESET);
-	prompt = ft_strjoin(prompt, pwd_path);
-	prompt = ft_strjoin(prompt, end_prompt);
+	level_str = ft_strjoin(prompt, pwd_path);
+	free(prompt);
+	prompt = level_str;
+	level_str = ft_strjoin(prompt, end_prompt);
+	free(prompt);
 	free(pwd_path);
 	free(end_prompt);
-	return (prompt);
+	return (level_str);
 }
 
 static void	handle_input(t_mini *mini, char *input)
