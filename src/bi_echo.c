@@ -22,14 +22,14 @@ void	ft_echo(t_token *token)
 
 	temp = token->next;
 	first = 1;
-	
+
 	if (!temp)
 	{
 		write(STDOUT_FILENO, "\n", 1);
 		return ;
 	}
-	
-	while (temp)
+
+	while (temp && temp->type == TOKEN_WORD)
 	{
 		if (!first)
 			write(STDOUT_FILENO, " ", 1);
@@ -46,18 +46,27 @@ void	ft_echon(t_token *token)
 	int		first;
 
 	temp = token->next;
-	if (!temp) // Skip il flag -n
+	if (!temp)
 		return ;
-	temp = temp->next; // Passa al primo argomento dopo -n
+
+	// Salta tutti i "-n" validi
+	while (temp && temp->value[0] == '-' && temp->value[1] == 'n')
+	{
+		int i = 1;
+		while (temp->value[i] == 'n') // Controlla che sia tutto "n"
+			i++;
+		if (temp->value[i] != '\0') // Se c'è un altro carattere oltre "n", fermati
+			break;
+		temp = temp->next;
+	}
+
 	first = 1;
-	
 	while (temp)
 	{
 		if (!first)
 			write(STDOUT_FILENO, " ", 1);
-		write(STDOUT_FILENO, temp->value, ft_strlen(temp->value));
+		write(STDOUT_FILENO, temp->value, strlen(temp->value));
 		first = 0;
 		temp = temp->next;
 	}
-	// Non stampa la nuova riga
 }
