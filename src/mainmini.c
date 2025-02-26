@@ -41,11 +41,11 @@ static char	*get_rainbow_prompt(t_mini *mini)
 		prompt = ft_strdup("");
 	level_str = ft_strjoin(prompt, "🐚" " "RED "m" ORANGE "i" YELLOW "n" GREEN "i"
 		BLUE "s" INDIGO "h" VIOLET "e" RED "l" ORANGE "l"
-		INDIGO ": " "🌈 "RESET);
+		INDIGO ": "RESET);
 	free(prompt);
 	prompt = level_str;
 	pwd_path = ft_strdup((const char *)ft_pwd(mini->envp->env));
-	pwd_path = ft_strjoin(SLAY, pwd_path);
+	pwd_path = ft_strjoin(VIOLET, pwd_path);
 	end_prompt = ft_strdup(RESET" ""🌈"" " INDIGO "> " RESET);
 	level_str = ft_strjoin(prompt, pwd_path);
 	free(prompt);
