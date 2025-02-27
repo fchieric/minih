@@ -15,57 +15,66 @@
 void	ft_echo(t_token *token);
 void	ft_echon(t_token *token);
 
-void	ft_echo(t_token *token)
+void    ft_echo(t_token *token)
 {
-	t_token	*temp;
-	int		first;
+    t_token *temp;
+    int     first;
 
-	temp = token->next;
-	first = 1;
+    temp = token->next;
+    first = 1;
 
-	if (!temp)
-	{
-		write(STDOUT_FILENO, "\n", 1);
-		return ;
-	}
-	while (temp && temp->type == TOKEN_WORD)
-	{
-		if (!first)
-			write(STDOUT_FILENO, " ", 1);
-		write(STDOUT_FILENO, temp->value, ft_strlen(temp->value));
-		first = 0;
-		temp = temp->next;
-	}
-	write(STDOUT_FILENO, "\n", 1);
+    if (!temp)
+    {
+        printf("\n");
+        return ;
+    }
+    while (temp && temp->type == TOKEN_WORD)
+    {
+        if (!first)
+            printf(" ");
+
+        if (ft_strcmp(temp->value, "?") == 0)
+			printf("%d", g_whatsup);
+        else
+            printf("%s", temp->value);
+
+        first = 0;
+        temp = temp->next;
+    }
+    printf("\n");
 }
 
-void	ft_echon(t_token *token)
+void    ft_echon(t_token *token)
 {
-	t_token	*temp;
-	int		first;
+    t_token *temp;
+    int     first;
 
-	temp = token->next;
+    temp = token->next;
+    if (!temp)
+        return ;
 
-	if (!temp)
-		return ;
-	// Salta tutti i "-n" validi
-	while (temp && temp->value[0] == '-' && temp->value[1] == 'n')
-	{
-		int i = 1;
-		while (temp->value[i] == 'n') // Controlla che sia tutto "n"
-			i++;
-		if (temp->value[i] != '\0') // Se c'è un altro carattere oltre "n", fermati
-			break;
-		temp = temp->next;
-	}
+    while (temp && temp->value[0] == '-' && temp->value[1] == 'n')
+    {
+        int i = 1;
+        while (temp->value[i] == 'n')
+            i++;
+        if (temp->value[i] != '\0')
+            break;
+        temp = temp->next;
+    }
 
-	first = 1;
-	while (temp)
-	{
-		if (!first)
-			write(STDOUT_FILENO, " ", 1);
-		write(STDOUT_FILENO, temp->value, strlen(temp->value));
-		first = 0;
-		temp = temp->next;
-	}
+    first = 1;
+    while (temp)
+    {
+        if (!first)
+            printf(" ");
+		printf("%s",temp->next->value);
+        if (ft_strcmp(temp->next->next->value, "$") == 0)
+			printf("%d", g_whatsup);
+        else
+            printf("%s", temp->value);
+
+        first = 0;
+        temp = temp->next;
+    }
 }
