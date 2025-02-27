@@ -28,7 +28,6 @@ void	ft_echo(t_token *token)
 		write(STDOUT_FILENO, "\n", 1);
 		return ;
 	}
-
 	while (temp && temp->type == TOKEN_WORD)
 	{
 		if (!first)
@@ -46,9 +45,9 @@ void	ft_echon(t_token *token)
 	int		first;
 
 	temp = token->next;
+
 	if (!temp)
 		return ;
-
 	// Salta tutti i "-n" validi
 	while (temp && temp->value[0] == '-' && temp->value[1] == 'n')
 	{
