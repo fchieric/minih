@@ -44,6 +44,7 @@ void	unset(t_mini *mini, const char *var_name)
 	if (!mini->envp->env || !var_name || strlen(var_name) == 0)
 	{
 		fprintf(stderr, "unset: invalid variable name\n");
+		g_whatsup = 1;
 		return ;
 	}
 	name_len = strlen(var_name);
@@ -55,6 +56,7 @@ void	unset(t_mini *mini, const char *var_name)
 		return ;
 	copy_env_except_var(new_env, mini->envp->env, var_name, name_len);
 	free(mini->envp->env);
+	g_whatsup = 0;
 	mini->envp->env = new_env;
 }
 

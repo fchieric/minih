@@ -55,7 +55,10 @@ char	**export(char **env, const char *new_var)
 	int		i;
 
 	if (!new_var || strchr(new_var, '=') == NULL)
+	{
+		g_whatsup = 1;
 		return (printdeclare(env), env);
+	}
 	name_len = strchr(new_var, '=') - new_var;
 	if (update_existing_var(env, new_var, name_len))
 		return (env);
@@ -64,13 +67,18 @@ char	**export(char **env, const char *new_var)
 		i++;
 	nenv = (char **)realloc(env, sizeof(char *) * (i + 2));
 	if (!nenv)
+	{
+		g_whatsup = 1;
 		return (NULL);
+	}
 	nenv[i] = strdup(new_var);
 	if (!nenv[i])
 	{
 		free_env(nenv);
+		g_whatsup = 1;
 		return (NULL);
 	}
 	nenv[i + 1] = NULL;
+	g_whatsup = 0;
 	return (nenv);
 }

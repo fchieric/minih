@@ -77,7 +77,7 @@ static void	handle_child_process(t_command *cmd, t_mini *mini,
 {
 	setup_child_signals();
 	setup_child_pipes(state, cmd_index);
-	
+
 	// Configura le redirezioni
 	if (cmd->infile)
 		redirect_input(cmd->infile);
@@ -87,7 +87,7 @@ static void	handle_child_process(t_command *cmd, t_mini *mini,
 		redirect_output(cmd->append, 1);
 	if (cmd->heredoc)
 		setup_heredoc(cmd);
-	
+
 	if (cmd->type == CMD_BUILTIN)
 	{
 		t_token *token = safe_malloc(sizeof(t_token));
@@ -96,7 +96,7 @@ static void	handle_child_process(t_command *cmd, t_mini *mini,
 		token->type = TOKEN_WORD;
 		token->value = ft_strdup(cmd->name);
 		token->next = NULL;
-		
+
 		// Aggiungi tutti gli argomenti come token
 		t_token *last = token;
 		int i = 1;
@@ -104,7 +104,10 @@ static void	handle_child_process(t_command *cmd, t_mini *mini,
 		{
 			last->next = safe_malloc(sizeof(t_token));
 			if (!last->next)
-				exit(1);
+			{
+				g_whatsup = 126;
+				exit(126);
+			}
 			last = last->next;
 			last->type = TOKEN_WORD;
 			last->value = ft_strdup(cmd->args[i]);
@@ -112,7 +115,7 @@ static void	handle_child_process(t_command *cmd, t_mini *mini,
 			i++;
 		}
 		handleword(token, mini);
-		
+
 		// Libera i token
 		free_tokens(token);
 		exit(mini->envp->exit_status);
@@ -125,10 +128,12 @@ static void	handle_child_process(t_command *cmd, t_mini *mini,
 		{
 			ft_putstr_fd("minishell: command not found: ", 2);
 			ft_putendl_fd(cmd->name, 2);
+			g_whatsup = 127;
 			exit(127);
 		}
 		execve(path, cmd->args, mini->envp->env);
 		free(path);
+		g_whatsup = 127;
 		exit(127);
 	}
 }

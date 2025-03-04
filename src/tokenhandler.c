@@ -108,14 +108,17 @@ void	execute_external_command(t_command *cmd, t_mini *mini)
 		{
 			ft_putstr_fd("minishell: command not found: ", 2);
 			ft_putendl_fd(cmd->name, 2);
+			g_whatsup = 127;
 			exit(127);
 		}
 		execve(path, cmd->args, mini->envp->env);
 		perror(cmd->name);
 		free(path);
-		exit(127);
+		g_whatsup = 126;
+		exit(126);
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		mini->envp->exit_status = WEXITSTATUS(status);
+	g_whatsup = 0;
 }

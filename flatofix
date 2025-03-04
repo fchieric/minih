@@ -1,0 +1,52 @@
+
+0: Success/normal termination
+
+👌builtinexe() in bi_handlebi.c: After successful built-in command execution
+👌execute_external_command() in tokenhandler.c: After successful external command execution
+(?)👌After successful pipe execution in pipes.c
+
+👌1: General errors/catchall
+
+👌bi_pwd_cd.c: When chdir() fails in the ft_cd() function
+👌bi_unset.c: When unset encounters an error
+👌bi_export.c: When export fails or gets invalid arguments
+👌redirs.c: When redirections fail (file not found, permission issues)
+
+2: Misuse of shell builtins or syntax errors
+
+👌lexer.c: In the validation section that calls is_valid_token_sequence()
+👌lexerquotes.c: When quotes are unclosed or improperly formatted
+bi_handlebi.c: When built-ins are called with invalid arguments
+
+126: Command found but not executable
+
+👌execute_external_command() in tokenhandler.c: After find_command_path() succeeds but access() with X_OK fails
+👌pipes.c: In the handle_child_process() function when the command is found but can't be executed
+
+👌127: Command not found
+
+👌pipe_executor.c: Already implemented in line 22 when find_command_path() returns NULL
+👌tokenhandler.c: In execute_external_command() after checking path existence
+
+128: Invalid exit argument (exit takes values 0-255)
+
+You need to create an exit built-in function that validates the exit code argument
+
+128+n: Fatal error signal 'n'
+
+signals.c: In the signal handler functions
+ctrlc(): Set exit status to 130 for SIGINT
+sigquit_handler(): Set exit status to 131 for SIGQUIT
+In wait_for_children() when checking WIFSIGNALED(status) to get the signal number
+
+255: Exit status out of range
+
+In your exit built-in command implementation when validating arguments
+
+One important note: You need to check the WIFSIGNALED() macro in places like pipes.c in the wait_for_children() function, and calculate status as 128 + signal number when a process is terminated by a signal.
+Example implementation:
+cCopyif (WIFSIGNALED(status)) {
+    mini->envp->exit_status = 128 + WTERMSIG(status);
+} else if (WIFEXITED(status)) {
+    mini->envp->exit_status = WEXITSTATUS(status);
+}

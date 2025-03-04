@@ -111,6 +111,7 @@ t_token	*lexer(t_mini *mini, const char *input)
 	if (!is_valid_token_sequence(tokens))
 	{
 		free_tokens(tokens);
+		g_whatsup = 2;
 		return (NULL);
 	}
 	return (tokens);

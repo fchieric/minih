@@ -20,7 +20,10 @@ char	*find_command_path(char *cmd, char **envp)
 	int		i;
 
 	if (!cmd || !*cmd)
+	{
+		g_whatsup = 127;
 		return (NULL);
+	}
 	if (cmd[0] == '/' || cmd[0] == '.')
 		return (ft_strdup(cmd));
 	i = 0;
@@ -129,6 +132,7 @@ void	execute_single_command(t_command *cmd, t_mini *mini,
 		ft_putstr_fd("minishell: command not found: ", 2);
 		ft_putendl_fd(cmd->name, 2);
 		mini->envp->exit_status = 127;
+		g_whatsup = 127;
 		return ;
 	}
 	if (input_fd != STDIN_FILENO)
@@ -137,5 +141,6 @@ void	execute_single_command(t_command *cmd, t_mini *mini,
 		dup2(output_fd, STDOUT_FILENO);
 	execve(path, cmd->args, mini->envp->env);
 	free(path);
+	g_whatsup = 127;
 	exit(127);
 }

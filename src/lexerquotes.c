@@ -21,11 +21,11 @@ static char    *append_to_result(char *result, const char *append)
     return (tmp);
 }
 
-static char    *process_dollar_var(t_mini *mini, const char *input, 
+static char    *process_dollar_var(t_mini *mini, const char *input,
     size_t *i, char *result)
 {
     char    *var_value;
-    
+
     var_value = expand_env_var(mini, input, i);
     result = append_to_result(result, var_value);
     free(var_value);
@@ -35,7 +35,7 @@ static char    *process_dollar_var(t_mini *mini, const char *input,
 static char    *process_regular_char(const char *input, size_t *i, char *result)
 {
     char    *tmp;
-    
+
     tmp = ft_substr(input, *i, 1);
     result = append_to_result(result, tmp);
     free(tmp);
@@ -51,8 +51,8 @@ char    *handle_double_quotes(t_mini *mini, const char *input, size_t *i)
     result = ft_strdup("");
     while (input[*i] && input[*i] != '"')
     {
-        if (input[*i] == '$' && input[*i + 1] && 
-            (ft_isalnum(input[*i + 1]) || input[*i + 1] == '_' 
+        if (input[*i] == '$' && input[*i + 1] &&
+            (ft_isalnum(input[*i + 1]) || input[*i + 1] == '_'
             || input[*i + 1] == '?'))
             result = process_dollar_var(mini, input, i, result);
         else
@@ -62,6 +62,7 @@ char    *handle_double_quotes(t_mini *mini, const char *input, size_t *i)
     {
         free(result);
         ft_putendl_fd("minishell: syntax error: unclosed double quote", 2);
+        g_whatsup = 2;
         return (NULL);
     }
     (*i)++;
@@ -80,6 +81,7 @@ char	*handle_single_quotes(const char *input, size_t *i)
 	if (!input[*i])
 	{
 		ft_putendl_fd("minishell: syntax error: unclosed single quote", 2);
+        g_whatsup = 2;
 		return (NULL);
 	}
 	content = ft_substr(input, start, *i - start);

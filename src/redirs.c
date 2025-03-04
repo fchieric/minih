@@ -20,6 +20,7 @@ void	redirect_input(const char *filename)
 	if (fd == -1)
 	{
 		perror(filename);
+		g_whatsup = 1;
 		return; // Non uscire, segnala solo l'errore
 	}
 	dup2(fd, STDIN_FILENO);
@@ -40,6 +41,7 @@ void	redirect_output(const char *filename, int append_mode)
 	if (fd == -1)
 	{
 		perror(filename);
+		g_whatsup = 1;
 		return; // Non uscire, segnala solo l'errore
 	}
 	dup2(fd, STDOUT_FILENO);
@@ -50,7 +52,7 @@ void	handle_command_redirection(t_command *cmd, t_token *curr)
 {
 	if (!cmd || !curr || !curr->next)
 		return ;
-		
+
 	if (curr->type == TOKEN_REDIR_IN)
 		cmd->infile = ft_strdup(curr->next->value);
 	else if (curr->type == TOKEN_REDIR_OUT)

@@ -52,31 +52,29 @@ void ft_echo(t_token *token)
         first = 0;
         temp = temp->next;
     }
-
     printf("\n");
+	g_whatsup = 0;
+
 }
 
 void ft_echon(t_token *token)
 {
     t_token *temp;
     int first;
-    int flag_n = 0;  // Flag to track if we should skip the newline
+    int flag_n = 0;
 
     temp = token->next;
-
     if (!temp)
         return ;
-
-    // Skip over the -n flags
     while (temp && temp->value[0] == '-' && temp->value[1] == 'n')
     {
         int i = 1;
-        while (temp->value[i] == 'n')  // Skip all occurrences of 'n'
+        while (temp->value[i] == 'n')
             i++;
-        if (temp->value[i] != '\0')    // Stop if there are other characters
+        if (temp->value[i] != '\0')
             break;
-        temp = temp->next;  // Move to the next token
-        flag_n = 1;  // We encountered -n, so we'll suppress the newline
+        temp = temp->next;
+        flag_n = 1;
     }
 
     first = 1;
@@ -111,5 +109,5 @@ void ft_echon(t_token *token)
     // Print the newline unless the -n flag is present
     if (!flag_n)
         printf("\n");
+     g_whatsup = 0;
 }
-
