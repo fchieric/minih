@@ -6,7 +6,7 @@
 /*   By: fabi <fabi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 23:27:22 by fabi              #+#    #+#             */
-/*   Updated: 2025/02/03 15:35:42 by fabi             ###   ########.fr       */
+/*   Updated: 2025/03/12 18:02:15 by fabi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,18 +89,26 @@ t_command	*parse_tokens(t_token *tokens)
 	head = cmd;
 	curr = tokens;
 	while (curr)
-	{
-		if (curr->type == TOKEN_WORD || curr->type == TOKEN_TEXT
-			|| curr->type == TOKEN_VAR)
-			process_word_token(cmd, curr->value);
-		else if (curr->type == TOKEN_PIPE)
-		{
-			cmd->next = init_command();
-			cmd = cmd->next;
-		}
-		else
-			handle_command_redirection(cmd, curr);
-		curr = curr->next;
-	}
+    {
+        if (curr->type == TOKEN_WORD || curr->type == TOKEN_TEXT
+            || curr->type == TOKEN_VAR)
+        {
+            process_word_token(cmd, curr->value);
+        }
+        else if (curr->type == TOKEN_PIPE)
+        {
+            cmd->next = init_command();
+            cmd = cmd->next;
+        }
+        else if (curr->type == TOKEN_REDIR_IN || curr->type == TOKEN_REDIR_OUT ||
+                 curr->type == TOKEN_HEREDOC || curr->type == TOKEN_APPEND)
+        {
+            handle_command_redirection(cmd, curr);
+            // Skip the next token (filename) to avoid adding it as an argument
+            if (curr->next)
+                curr = curr->next;
+        }
+        curr = curr->next;
+    }
 	return (head);
 }
