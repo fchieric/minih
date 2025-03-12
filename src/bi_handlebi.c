@@ -23,9 +23,9 @@ int handleword(t_token *token, t_mini *mini)
     b = builtin(token->value);
     if (b != -1)
     {
-        g_whatsup = 1;  // Imposta prima di eseguire il builtin
+        //g_whatsup = 1;  // Imposta prima di eseguire il builtin
         builtinexe(token, mini);
-        g_whatsup = 0;  // Reimposta dopo l'esecuzione
+        //g_whatsup = 0;  // Reimposta dopo l'esecuzione
     }
     
     return (0);
@@ -88,5 +88,4 @@ void	builtinexe(t_token *token, t_mini *mini)
 		if (token->next && token->next->value)
 			unset(mini, token->next->value);
 	}
-	g_whatsup = 0;
 }

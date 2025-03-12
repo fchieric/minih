@@ -20,7 +20,6 @@ void ft_echo(t_token *token)
     t_token *temp;
     int first;
 
-    printf("is: %d/n", g_whatsup);  // Print the value of g_whatsup
     temp = token->next;
     first = 1;
 
@@ -39,11 +38,11 @@ void ft_echo(t_token *token)
         {
             printf("%d", g_whatsup);  // Print the value of g_whatsup
         }
-        else if (temp->value[0] == '?' && temp->value[1] != '\0')  // Handle cases like "?yeah"
-        {
-            printf("%d", g_whatsup);  // Print the value of g_whatsup
-            printf("%s", &temp->value[1]);  // Print the rest of the string after "?"
-        }
+        //else if (temp->value[0] == '?' && temp->value[1] != '\0')  // Handle cases like "?yeah"
+        //{
+        //    printf("%d", g_whatsup);  // Print the value of g_whatsup
+        //    printf("%s", &temp->value[1]);  // Print the rest of the string after "?"
+        //}
         else
         {
             printf("%s", temp->value);  // Normal printing of the token

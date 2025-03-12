@@ -123,6 +123,6 @@ void execute_external_command(t_command *cmd, t_mini *mini)
     waitpid(pid, &status, 0);
     if (WIFEXITED(status))
         g_whatsup = WEXITSTATUS(status);
-    
-    g_whatsup = 0;  // Reimposta a 0 dopo la fine dell'esecuzione
+    else
+    	g_whatsup = 1;  // Reimposta a 0 dopo la fine dell'esecuzione
 }
