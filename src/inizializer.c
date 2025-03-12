@@ -23,7 +23,7 @@ void init_shell(t_mini *mini, char **env)
     mini->envp = safe_malloc(sizeof(t_env));
     mini->envp->env = copyenv(env);
     mini->envp->exportenv = copyenv(env);
-    mini->envp->exit_status = 0;
+    g_whatsup = 0;
     // Incrementa SHLVL
     shlvl_str = ft_getenv(mini->envp->env, "SHLVL");
     if (shlvl_str)

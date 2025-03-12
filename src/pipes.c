@@ -118,7 +118,7 @@ static void	handle_child_process(t_command *cmd, t_mini *mini,
 
 		// Libera i token
 		free_tokens(token);
-		exit(mini->envp->exit_status);
+		exit(g_whatsup);
 	}
 	else
 	{
@@ -149,7 +149,7 @@ static void	wait_for_children(t_pipe_state *state, t_mini *mini)
 	{
 		waitpid(state->child_pids[i], &status, 0);
 		if (WIFEXITED(status))
-			mini->envp->exit_status = WEXITSTATUS(status);
+			g_whatsup = WEXITSTATUS(status);
 		i++;
 	}
 	g_whatsup = 0;

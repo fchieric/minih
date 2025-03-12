@@ -6,7 +6,7 @@
 /*   By: fabi <fabi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 18:34:42 by fmartusc          #+#    #+#             */
-/*   Updated: 2025/02/25 00:47:10 by fabi             ###   ########.fr       */
+/*   Updated: 2025/03/12 16:02:03 by fabi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,6 @@ void	execute_single_command(t_command *cmd, t_mini *mini,
 	{
 		ft_putstr_fd("minishell: command not found: ", 2);
 		ft_putendl_fd(cmd->name, 2);
-		mini->envp->exit_status = 127;
 		g_whatsup = 127;
 		return ;
 	}

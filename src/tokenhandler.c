@@ -122,7 +122,7 @@ void execute_external_command(t_command *cmd, t_mini *mini)
     
     waitpid(pid, &status, 0);
     if (WIFEXITED(status))
-        mini->envp->exit_status = WEXITSTATUS(status);
+        g_whatsup = WEXITSTATUS(status);
     
     g_whatsup = 0;  // Reimposta a 0 dopo la fine dell'esecuzione
 }
