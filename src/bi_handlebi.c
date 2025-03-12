@@ -16,14 +16,19 @@ int handleword(t_token *token, t_mini *mini);
 int		builtin(char *line);
 void builtinexe(t_token *token, t_mini *mini);
 
-int	handleword(t_token *token, t_mini *mini)
+int handleword(t_token *token, t_mini *mini)
 {
-	int	b;
-
-	b = builtin(token->value);
-	if (b != -1)
-		builtinexe(token, mini);
-	return (0);
+    int b;
+    
+    b = builtin(token->value);
+    if (b != -1)
+    {
+        g_whatsup = 1;  // Imposta prima di eseguire il builtin
+        builtinexe(token, mini);
+        g_whatsup = 0;  // Reimposta dopo l'esecuzione
+    }
+    
+    return (0);
 }
 
 int	builtin(char *line)
@@ -83,4 +88,5 @@ void	builtinexe(t_token *token, t_mini *mini)
 		if (token->next && token->next->value)
 			unset(mini, token->next->value);
 	}
+	g_whatsup = 0;
 }
