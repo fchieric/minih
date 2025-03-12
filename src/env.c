@@ -15,14 +15,13 @@
 char **copyenv(char **envp);
 void free_env(char **env);
 
-// Function to duplicate the environment
 char **copyenv(char **envp)
 {
     int count = 0;
     while (envp[count])
         count++;
 
-    char **env = (char **)malloc(sizeof(char *) * (count + 2)); // +1 for NULL, +1 for missing OLDPWD
+    char **env = (char **)malloc(sizeof(char *) * (count + 2));
     if (!env)
         return NULL;
 
@@ -43,8 +42,6 @@ char **copyenv(char **envp)
             oldpwd_found = 1;
         i++;
     }
-
-    // Ensure OLDPWD exists
     if (!oldpwd_found)
     {
         env[i] = strdup("OLDPWD=");
@@ -62,7 +59,6 @@ char **copyenv(char **envp)
     return env;
 }
 
-// Function to free environment
 void free_env(char **env)
 {
     int i = 0;
@@ -75,7 +71,6 @@ void free_env(char **env)
     free(env);
 }
 
-// Function to get an environment variable
 char *ft_getenv(char **envp, const char *name)
 {
     int i = 0;
@@ -90,7 +85,6 @@ char *ft_getenv(char **envp, const char *name)
     return NULL;
 }
 
-// Function to update or add an environment variable
 void ft_setenv(char ***envp, const char *name, const char *value)
 {
     int i = 0;
@@ -113,8 +107,6 @@ void ft_setenv(char ***envp, const char *name, const char *value)
         }
         i++;
     }
-
-    // Add new variable if not found
     char **new_env = realloc(env, sizeof(char *) * (i + 2));
     if (!new_env)
     {

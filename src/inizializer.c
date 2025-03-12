@@ -24,15 +24,12 @@ void init_shell(t_mini *mini, char **env)
     mini->envp->env = copyenv(env);
     mini->envp->exportenv = copyenv(env);
     g_whatsup = 0;
-    // Incrementa SHLVL
     shlvl_str = ft_getenv(mini->envp->env, "SHLVL");
     if (shlvl_str)
     shlvl = atoi(shlvl_str);
     else
     shlvl = 0;
-
     shlvl++;
     sprintf(new_shlvl, "%d", shlvl);
-    // ft_setenv(mini->envp->env, "SHLVL", new_shlvl);
     ft_setenv(&(mini->envp->env), "SHLVL", new_shlvl);
 }

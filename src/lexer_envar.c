@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_envar.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fabi <fabi@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: fmartusc <fmartusc@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 19:47:26 by fabi              #+#    #+#             */
-/*   Updated: 2025/03/12 15:59:47 by fabi             ###   ########.fr       */
+/*   Updated: 2025/03/12 17:32:17 by fmartusc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	*process_var_in_quotes(t_mini *mini,
 	free(var_value);
 	return (tmp);
 }
-//prende il nome della variabiel che stiamo cercando
+
 static char	*get_env_var_name(const char *input, size_t *i)
 {
 	size_t	start;
@@ -70,7 +70,7 @@ char *expand_env_var(t_mini *mini, const char *input, size_t *i)
     if (ft_strcmp(var_name, "?") == 0)
     {
         free(var_name);
-        snprintf(exit_status, 12, "%d", g_whatsup); // Usa g_whatsup invece di mini->envp->exit_status
+        snprintf(exit_status, 12, "%d", g_whatsup);
         return (ft_strdup(exit_status));
     }
     value = get_env_value(mini->envp->env, var_name);

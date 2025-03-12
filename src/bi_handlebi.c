@@ -19,15 +19,13 @@ void builtinexe(t_token *token, t_mini *mini);
 int handleword(t_token *token, t_mini *mini)
 {
     int b;
-    
+
     b = builtin(token->value);
     if (b != -1)
     {
-        //g_whatsup = 1;  // Imposta prima di eseguire il builtin
         builtinexe(token, mini);
-        //g_whatsup = 0;  // Reimposta dopo l'esecuzione
     }
-    
+
     return (0);
 }
 
@@ -60,7 +58,7 @@ void	builtinexe(t_token *token, t_mini *mini)
 			tmp = token->next->value;
 		else
 			tmp = NULL;
-		
+
 		if (tmp && ft_strcmp(tmp, "-n") == 0)
 			ft_echon(token);
 		else

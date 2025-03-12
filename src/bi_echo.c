@@ -32,20 +32,18 @@ void ft_echo(t_token *token)
     {
         if (!first)
             printf(" ");
-
-        // Check if the token is "?" and needs substitution
         if (ft_strcmp(temp->value, "?") == 0)
         {
-            printf("%d", g_whatsup);  // Print the value of g_whatsup
+            printf("%d", g_whatsup);
         }
-        //else if (temp->value[0] == '?' && temp->value[1] != '\0')  // Handle cases like "?yeah"
-        //{
-        //    printf("%d", g_whatsup);  // Print the value of g_whatsup
-        //    printf("%s", &temp->value[1]);  // Print the rest of the string after "?"
-        //}
+        else if (temp->value[0] == '?' && temp->value[1] != '\0')
+        {
+            printf("%d", g_whatsup);
+            printf("%s", &temp->value[1]);
+        }
         else
         {
-            printf("%s", temp->value);  // Normal printing of the token
+            printf("%s", temp->value);
         }
 
         first = 0;
@@ -81,14 +79,12 @@ void ft_echon(t_token *token)
         if (!first)
             printf(" ");
 
-        // Handle substitution for "?" token
         if (ft_strcmp(temp->value, "?") == 0)
         {
             printf("%d", g_whatsup);
         }
         else
         {
-            // Handle cases where the value starts with "?" and is followed by other characters
             if (temp->value[0] == '?' && temp->value[1] != '\0')
             {
                 printf("%d", g_whatsup);
@@ -103,8 +99,6 @@ void ft_echon(t_token *token)
         first = 0;
         temp = temp->next;
     }
-
-    // Print the newline unless the -n flag is present
     if (!flag_n)
         printf("\n");
     ft_exit(0, 0);
