@@ -23,15 +23,11 @@ void ft_cd(t_token *token, t_mini *mini)
     if (!old_pwd)
     {
         perror("cd: getcwd failed");
-        ft_exit(1);
+        ft_exit(1, 0);
         return;
     }
-
-    // Se viene passato un argomento, lo usiamo come percorso
     if (token->next)
         path = token->next->value;
-
-    // Se nessun argomento o "~", andiamo nella HOME
     if (!path || strcmp(path, "~") == 0)
     {
         path = ft_getenv(mini->envp->env, "HOME");
@@ -39,11 +35,10 @@ void ft_cd(t_token *token, t_mini *mini)
         {
             fprintf(stderr, "cd: HOME not set\n");
             free(old_pwd);
-            ft_exit(1);
+            ft_exit(1, 0);
             return;
         }
     }
-    // Se "-", torniamo nella directory precedente
     else if (strcmp(path, "-") == 0)
     {
         path = ft_getenv(mini->envp->env, "OLDPWD");
@@ -51,36 +46,31 @@ void ft_cd(t_token *token, t_mini *mini)
         {
             fprintf(stderr, "cd: OLDPWD not set\n");
             free(old_pwd);
-            ft_exit(1);
+            ft_exit(1, 0);
             return;
         }
-        printf("%s\n", path); // Stampa la directory quando si usa "cd -"
+        printf("%s\n", path);
     }
-
-    // Cambiamo la directory
     if (chdir(path) != 0)
     {
         fprintf(stderr, "cd: %s: ", path);
         perror("");
         free(old_pwd);
-        ft_exit(1);
+        ft_exit(1, 0);
         return;
     }
-
-    // Aggiorniamo OLDPWD e PWD
     ft_setenv(&(mini->envp->env), "OLDPWD", old_pwd);
     free(old_pwd);
-
     char *new_pwd = getcwd(NULL, 0);
     if (!new_pwd)
     {
         perror("cd: getcwd failed");
-        ft_exit(1);
+        ft_exit(1, 0);
         return;
     }
-
     ft_setenv(&(mini->envp->env), "PWD", new_pwd);
-    ft_exit(0);
+    ft_exit(0, 0);
+
     free(new_pwd);
 }
 
@@ -88,7 +78,7 @@ void ft_cd(t_token *token, t_mini *mini)
 char *ft_pwd(char **env)
 {
     int i = 0;
-    ft_exit(0);
+    ft_exit(0, 0);
     while (env[i] != NULL)
 	{
         if (strncmp(env[i], "PWD=", 4) == 0)
@@ -96,6 +86,6 @@ char *ft_pwd(char **env)
         i++;
     }
     printf("PWD not found in environment.\n");
-    ft_exit(1);
+    ft_exit(1, 0);
 	return(NULL);
 }

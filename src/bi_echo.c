@@ -53,7 +53,6 @@ void ft_echo(t_token *token)
         temp = temp->next;
     }
     printf("\n");
-	g_whatsup = 0;
 
 }
 
@@ -109,5 +108,4 @@ void ft_echon(t_token *token)
     // Print the newline unless the -n flag is present
     if (!flag_n)
         printf("\n");
-     g_whatsup = 0;
 }
