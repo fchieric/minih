@@ -139,7 +139,7 @@ static void	handle_child_process(t_command *cmd, t_mini *mini,
 	}
 }
 
-static void	wait_for_children(t_pipe_state *state, t_mini *mini)
+static void	wait_for_children(t_pipe_state *state)
 {
 	int	i;
 	int	status;
@@ -179,7 +179,7 @@ void	execute_commands_with_pipes(t_command *cmd, t_mini *mini)
 		i++;
 	}
 	close_pipes(&state);
-	wait_for_children(&state, mini);
+	wait_for_children(&state);
 	free(state.pipe_fds);
 	free(state.child_pids);
 }
