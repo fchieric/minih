@@ -55,8 +55,8 @@ void ft_cd(t_token *token, t_mini *mini)
     {
         fprintf(stderr, "cd: %s: ", path);
         perror("");
-        free(old_pwd);
         ft_exit(1, 0);
+        free(old_pwd);
         return;
     }
     ft_setenv(&(mini->envp->env), "OLDPWD", old_pwd);
@@ -64,13 +64,12 @@ void ft_cd(t_token *token, t_mini *mini)
     char *new_pwd = getcwd(NULL, 0);
     if (!new_pwd)
     {
-        perror("cd: getcwd failed");
+        ft_putstr_fd("cd: getcwd failed", 2);
         ft_exit(1, 0);
         return;
     }
     ft_setenv(&(mini->envp->env), "PWD", new_pwd);
     ft_exit(0, 0);
-
     free(new_pwd);
 }
 
@@ -85,7 +84,7 @@ char *ft_pwd(char **env)
             return (env[i] + 4);
         i++;
     }
-    printf("PWD not found in environment.\n");
+    ft_putstr_fd("PWD not found in environment.\n", 2);
     ft_exit(1, 0);
 	return(NULL);
 }

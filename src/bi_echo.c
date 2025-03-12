@@ -20,6 +20,7 @@ void ft_echo(t_token *token)
     t_token *temp;
     int first;
 
+    printf("is: %d/n", g_whatsup);  // Print the value of g_whatsup
     temp = token->next;
     first = 1;
 
@@ -28,7 +29,6 @@ void ft_echo(t_token *token)
         printf("\n");
         return;
     }
-
     while (temp && temp->type == TOKEN_WORD)
     {
         if (!first)
@@ -53,7 +53,7 @@ void ft_echo(t_token *token)
         temp = temp->next;
     }
     printf("\n");
-
+    ft_exit(0, 0);
 }
 
 void ft_echon(t_token *token)
@@ -108,4 +108,5 @@ void ft_echon(t_token *token)
     // Print the newline unless the -n flag is present
     if (!flag_n)
         printf("\n");
+    ft_exit(0, 0);
 }
