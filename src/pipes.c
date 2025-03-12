@@ -124,16 +124,17 @@ static void	handle_child_process(t_command *cmd, t_mini *mini,
 	{
 		// Per i comandi esterni, usa execve
 		char *path = find_command_path(cmd->name, mini->envp->env);
+		// Modifica questa parte
 		if (!path)
 		{
-			ft_putstr_fd("minishell: command not found: ", 2);
-			ft_putendl_fd(cmd->name, 2);
-			g_whatsup = 127;
-			exit(127);
+	    	ft_putstr_fd("minishell: command not found: ", 2);
+	    	ft_putendl_fd(cmd->name, 2);
+    		g_whatsup = 127; // Questa impostazione non ha effetto nel processo padre
+    		exit(127);
 		}
 		execve(path, cmd->args, mini->envp->env);
 		free(path);
-		g_whatsup = 127;
+		g_whatsup = 127; // Anche questa impostazione non ha effetto
 		exit(127);
 	}
 }

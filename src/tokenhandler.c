@@ -87,38 +87,42 @@ void	setup_redirections(t_command *cmd)
 		setup_heredoc(cmd);
 }
 
-void	execute_external_command(t_command *cmd, t_mini *mini)
+void execute_external_command(t_command *cmd, t_mini *mini)
 {
-	pid_t	pid;
-	int		status;
-	char	*path;
-
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("fork");
-		return ;
-	}
-	if (pid == 0)
-	{
-		setup_child_signals();
-		setup_redirections(cmd);
-		path = find_command_path(cmd->name, mini->envp->env);
-		if (!path)
-		{
-			ft_putstr_fd("minishell: command not found: ", 2);
-			ft_putendl_fd(cmd->name, 2);
-			g_whatsup = 127;
-			exit(127);
-		}
-		execve(path, cmd->args, mini->envp->env);
-		perror(cmd->name);
-		free(path);
-		g_whatsup = 126;
-		exit(126);
-	}
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		mini->envp->exit_status = WEXITSTATUS(status);
-	g_whatsup = 0;
+    pid_t pid;
+    int status;
+    char *path;
+    
+    g_whatsup = 1;  // Imposta a 1 PRIMA del fork per indicare che un comando è in esecuzione
+    
+    pid = fork();
+    if (pid == -1)
+    {
+        perror("fork");
+        g_whatsup = 0;  // Reimposta a 0 in caso di errore
+        return;
+    }
+    
+    if (pid == 0)
+    {
+        setup_child_signals();
+        setup_redirections(cmd);
+        path = find_command_path(cmd->name, mini->envp->env);
+        if (!path)
+        {
+            ft_putstr_fd("minishell: command not found: ", 2);
+            ft_putendl_fd(cmd->name, 2);
+            exit(127);  // Non serve impostare g_whatsup qui, il processo figlio sta per terminare
+        }
+        execve(path, cmd->args, mini->envp->env);
+        perror(cmd->name);
+        free(path);
+        exit(126);  // Non serve impostare g_whatsup qui, il processo figlio sta per terminare
+    }
+    
+    waitpid(pid, &status, 0);
+    if (WIFEXITED(status))
+        mini->envp->exit_status = WEXITSTATUS(status);
+    
+    g_whatsup = 0;  // Reimposta a 0 dopo la fine dell'esecuzione
 }

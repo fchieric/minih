@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	g_whatsup = -1;
+int	g_whatsup = 0;
 
 static char	*get_rainbow_prompt(t_mini *mini)
 {
