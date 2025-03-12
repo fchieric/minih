@@ -198,6 +198,7 @@ void	redirect_input(const char *filename);
 void	redirect_output(const char *filename, int append_mode);
 
 void	free_matrix(char **matrix);
+void ft_exit(int exit_code);
 
 
 

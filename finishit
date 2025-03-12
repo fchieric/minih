@@ -1,0 +1,61 @@
+# Minishell Project Completion Checklist
+
+## Core Functionality
+- [x] Display a prompt when waiting for a new command
+- [x] Working history (using readline/add_history)
+- [x] Search and launch executables (PATH, relative, or absolute paths)
+- [x] Single quotes handling (prevent interpreting meta-characters)
+- [x] Double quotes handling (prevent interpreting meta-characters except $)
+- [x] Basic redirections (<, >)
+- [x] Advanced redirections (<<, >>)
+- [x] Pipes implementation (|)
+- [x] Environment variable expansion ($VAR)
+- [x] Exit status variable expansion ($?)
+- [x] Proper signal handling (CTRL+C, CTRL+D, CTRL+\)
+
+## Missing or Incomplete Features
+- [ ] Fix exit status management (create ft_exit function)
+- [ ] Complete heredoc implementation (`setup_heredoc` function)
+- [ ] Fix memory leaks, especially in string operations and command execution
+- [ ] Improve error handling for edge cases
+- [ ] Ensure proper cleanup of file descriptors
+
+## Signal Handling Specifics
+- [ ] Verify CTRL+C displays new prompt on new line
+- [ ] Verify CTRL+D exits the shell
+- [ ] Verify CTRL+\ does nothing in interactive mode
+
+## Builtins to Implement/Check
+- [ ] echo with -n flag
+- [ ] cd with relative or absolute path
+- [ ] pwd with no options
+- [ ] export with no options
+- [ ] unset with no options
+- [ ] env with no options or arguments
+- [ ] exit with exit status
+
+## Testing and Edge Cases
+- [ ] Test handling of special characters in quotes
+- [ ] Test pipe sequences with multiple commands
+- [ ] Test complex redirections (e.g., cmd > file1 < file2)
+- [ ] Test environment variable expansion in different contexts
+- [ ] Test error handling for command not found
+- [ ] Test error handling for permission denied
+- [ ] Test with very long input lines
+- [ ] Test with non-existent files/directories
+
+## Code Quality and Norm
+- [ ] Ensure all functions comply with the 42 norm (length, parameters, etc.)
+- [ ] Remove any debugging code (like print_tokens)
+- [ ] Ensure consistent error messages (match bash where appropriate)
+- [ ] Check for unused variables or functions
+- [ ] Verify only one global variable is used (for signals)
+
+## Final Steps
+- [ ] Create a comprehensive Makefile with required rules
+- [ ] Double-check memory management with tools like Valgrind
+- [ ] Add appropriate comments/documentation
+- [ ] Clean up any test files or temporary code
+- [ ] Do final testing against bash for behavior comparison
+
+Would you like me to elaborate on any specific part of this checklist?

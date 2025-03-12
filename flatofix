@@ -21,7 +21,7 @@ bi_handlebi.c: When built-ins are called with invalid arguments
 126: Command found but not executable
 
 👌execute_external_command() in tokenhandler.c: After find_command_path() succeeds but access() with X_OK fails
-👌pipes.c: In the handle_child_process() function when the command is found but can't be executed
+👌pipes.c: In the handle_child_process() function when the command is fouland but can't be executed
 
 👌127: Command not found
 
