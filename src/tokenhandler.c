@@ -92,9 +92,9 @@ void execute_external_command(t_command *cmd, t_mini *mini)
     pid_t pid;
     int status;
     char *path;
-    
+
     g_whatsup = 1;  // Imposta a 1 PRIMA del fork per indicare che un comando è in esecuzione
-    
+
     pid = fork();
     if (pid == -1)
     {
@@ -102,7 +102,7 @@ void execute_external_command(t_command *cmd, t_mini *mini)
         g_whatsup = 0;  // Reimposta a 0 in caso di errore
         return;
     }
-    
+
     if (pid == 0)
     {
         setup_child_signals();
@@ -119,7 +119,7 @@ void execute_external_command(t_command *cmd, t_mini *mini)
         free(path);
         exit(126);  // Non serve impostare g_whatsup qui, il processo figlio sta per terminare
     }
-    
+
     waitpid(pid, &status, 0);
     if (WIFEXITED(status))
         g_whatsup = WEXITSTATUS(status);

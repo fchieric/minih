@@ -23,6 +23,7 @@ void ft_echo(t_token *token)
     temp = token->next;
     first = 1;
 
+
     if (!temp)
     {
         printf("\n");

@@ -77,7 +77,6 @@ void ft_cd(t_token *token, t_mini *mini)
 char *ft_pwd(char **env)
 {
     int i = 0;
-    ft_exit(0, 0);
     while (env[i] != NULL)
 	{
         if (strncmp(env[i], "PWD=", 4) == 0)

@@ -25,7 +25,6 @@ int handleword(t_token *token, t_mini *mini)
     {
         builtinexe(token, mini);
     }
-
     return (0);
 }
 
